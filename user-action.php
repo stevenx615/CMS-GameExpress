@@ -125,6 +125,7 @@ switch ($action) {
       $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
       $first_name = filter_input(INPUT_POST, 'firstname', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
       $last_name = filter_input(INPUT_POST, 'lastname', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+      $role_id = filter_var($_SESSION['user']['role_id'], FILTER_SANITIZE_NUMBER_INT);
 
       $password_query = '';
       if (!empty($_POST['password'])) {
@@ -148,13 +149,26 @@ switch ($action) {
         die('There is an error when updating the user account.');
       }
 
-      if ($success) {
-        $_SESSION['user']['email'] = $email;
-        $_SESSION['user']['first_name'] = $first_name;
-        $_SESSION['user']['last_name'] = $last_name;
+      // sign out user
+      unset($_SESSION['user']);
+
+      if ($success && empty($_POST['password'])) {
+        $user = [];
+        $user['user_id'] = $user_id;
+        $user['role_id'] = $role_id;
+        $user['username'] = $username;
+        $user['email'] = $email;
+        $user['first_name'] = $first_name;
+        $user['last_name'] = $last_name;
+        $_SESSION['user'] = $user;
+        $url = 'user-action.php?action=success-messages&pre=update-account';
       }
 
-      redirect('user-action.php?action=success-messages&pre=update-account');
+      if (!empty($_POST['password'])) {
+        $url = 'user-action.php?action=success-messages&pre=update-account&pwup=1';
+      }
+
+      redirect($url);
       break;
     };
   case 'error-messages': {
@@ -181,6 +195,9 @@ switch ($action) {
       // get the referer, sign up or log in
       if (isset($_GET['pre'])) {
         $previous_action = $_GET['pre'];
+      }
+      if (isset($_GET['pwup'])) {
+        $password_updated = $_GET['pwup'];
       }
       break;
     };
@@ -324,9 +341,16 @@ function clear_login_session()
             after 3 seconds.</p>
         <?php elseif ($previous_action == 'update-account') :  ?>
           <h1>Your account has been successfully updated!</h1>
-          <p class="mt-3 fs-5">It will automatically jump to the <a href="account.php" style="color: #00E46A;">My
-              Account</a>
-            after 3 seconds.</p>
+          <?php if ($password_updated == 1) :  ?>
+            <p class="mt-3 fs-5">You need to log in again when the password is changed.</p>
+            <p class="mt-3 fs-5">It will automatically jump to the <a href="user.php?action=login" style="color: #00E46A;">Log
+                In</a>
+              page after 3 seconds.</p>
+          <?php else : ?>
+            <p class="mt-3 fs-5">It will automatically jump to the <a href="account.php" style="color: #00E46A;">My
+                Account</a>
+              after 3 seconds.</p>
+          <?php endif ?>
         <?php endif ?>
       <?php endif ?>
     </div>

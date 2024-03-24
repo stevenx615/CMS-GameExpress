@@ -1,5 +1,6 @@
 <?php
 session_start();
+require 'utilities.php';
 require 'authentication.php';
 
 if (!is_logged_in()) {
