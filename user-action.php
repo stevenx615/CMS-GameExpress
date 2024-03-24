@@ -1,4 +1,5 @@
 <?php
+session_start();
 require 'utilities.php';
 
 if (!isset($_GET['action'])) {
@@ -6,11 +7,11 @@ if (!isset($_GET['action'])) {
 }
 
 $action = $_GET['action'];
-// session_start();
 
 // connect to database
 require 'db_connection.php';
 
+// execute different action based on the action argument
 switch ($action) {
   case 'signup': {
       $page_title = 'Sign Up';
@@ -50,7 +51,14 @@ switch ($action) {
 
       if ($success) {
         clear_signup_session();
-        $_SESSION['user_id'] = $user_id;
+        $user = [];
+        $user['user_id'] = $user_id;
+        $user['role_id'] = $role_id;
+        $user['username'] = $username;
+        $user['email'] = $email;
+        $user['first_name'] = $first_name;
+        $user['last_name'] = $last_name;
+        $_SESSION['user'] = $user;
         redirect('user-action.php?action=success-messages&pre=signup');
       }
 
@@ -81,7 +89,14 @@ switch ($action) {
       // pass validation
       if (password_verify($password, $result['password'])) {
         clear_login_session();
-        $_SESSION['user_id'] = $result['user_id'];
+        $user = [];
+        $user['user_id'] = $result['user_id'];
+        $user['role_id'] = $result['role_id'];
+        $user['username'] = $result['username'];
+        $user['email'] = $result['email'];
+        $user['first_name'] = $result['first_name'];
+        $user['last_name'] = $result['last_name'];
+        $_SESSION['user'] = $user;
         redirect('user-action.php?action=success-messages&pre=login');
       } else {
         $error_msgs[] = 'Password is incorrect.';
@@ -91,6 +106,12 @@ switch ($action) {
 
       break;
     };
+  case 'signout': {
+      $page_title = 'Sign Out';
+      unset($_SESSION['user']);
+      redirect('user-action.php?action=success-messages&pre=signout');
+      break;
+    }
   case 'error-messages': {
       $page_title = 'Errors Occurred';
       $error_msgs = [];
@@ -119,6 +140,7 @@ switch ($action) {
       break;
     }
   default:
+    redirect('index.php');
     break;
 }
 
@@ -193,13 +215,14 @@ function clear_login_session()
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= $page_title ?></title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="style.css">
+  <?php
+  include "template-head.php";
+  ?>
 </head>
 
 <body class="bg-dark d-flex flex-column min-vh-100">
   <?php
-  include("template-header-lite.php");
+  include "template-header-lite.php";
   ?>
 
   <main class="main mt-5 d-flex justify-content-center flex-grow-1">
@@ -222,17 +245,18 @@ function clear_login_session()
       <?php elseif ($action == 'success-messages') : ?>
         <?php if ($previous_action == 'signup') : ?>
           <h1>Sign up successfully!</h1>
-          <p class="mt-3 fs-5">It will automatically jump to the home page after 3 seconds.</p>
         <?php elseif ($previous_action == 'login') :  ?>
           <h1>Log in successfully!</h1>
-          <p class="mt-3 fs-5">It will automatically jump to the home page after 3 seconds.</p>
+        <?php elseif ($previous_action == 'signout') :  ?>
+          <h1>Sign out successfully!</h1>
         <?php endif ?>
+        <p class="mt-3 fs-5">It will automatically jump to the home page after 3 seconds.</p>
       <?php endif ?>
     </div>
   </main>
 
   <?php
-  include("template-footer.php");
+  include "template-footer.php";
   ?>
 </body>
 

@@ -1,5 +1,8 @@
 <?php
+session_start();
+print_r($_SESSION);
 require 'db_connection.php';
+require 'authentication.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,15 +12,14 @@ require 'db_connection.php';
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>News</title>
   <?php
-  include("template-head.php");
+  include "template-head.php";
   ?>
 </head>
 
 <body class="bg-dark d-flex flex-column min-vh-100">
   <?php
-  $has_login = false;
-  include("template-header.php");
-  include("template-search.php");
+  include "template-header.php";
+  include "template-search.php";
   ?>
 
   <main class="main d-flex justify-content-center flex-grow-1">
@@ -27,7 +29,7 @@ require 'db_connection.php';
   </main>
 
   <?php
-  include("template-footer.php");
+  include "template-footer.php";
   ?>
 </body>
 

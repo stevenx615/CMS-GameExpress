@@ -28,6 +28,7 @@ time, mark, audio, video {
   --ge-green-dark: #005f2c;
   --ge-gray: #929AA6;
   --ge-gray-subtle: #364040;
+  --ge-gray-subtle2: #2F3233;
   --ge-gray-dark: #14191A;
 
   --bs-dropdown-min-width: 15rem !important;
@@ -113,8 +114,12 @@ h1 {
 }
 
 .dropdown-menu {
-  min-width: 12rem;
+  min-width: max-content;
   color: var(--ge-white-subtle);
+}
+
+.dropdown-menu a {
+  line-height: 2rem;
 }
 
 .dropdown-menu a:link,
@@ -124,7 +129,7 @@ h1 {
 
 .dropdown-menu a:hover,
 .dropdown-menu a:focus {
-  background-color: #2F3233;
+  background-color: var(--ge-gray-subtle2);
 }
 
 .user-entry a{
@@ -132,8 +137,29 @@ h1 {
   line-height: 1;
 }
 
+.user {
+  position: relative;
+}
+
+/* solve the pesudo after overlay on elements */
+.user-avatar > * {
+  z-index: 1;
+}
+
+.user-avatar:hover::after {
+  content: " ";
+  display: block;
+  width: 3rem;
+  height: 3rem;
+  padding: 0 2rem;
+  position: absolute;
+  left: -25%;
+  background-color: var(--ge-gray-subtle2);
+  border-radius: 10px;
+}
+
 .search-section {
-  background-color: #2F3233;
+  background-color: var(--ge-gray-subtle2);
 }
 
 .btn-green {
@@ -142,10 +168,6 @@ h1 {
 }
 .btn-green:hover {
   background-color: var(--ge-green-dark);
-}
-
-.search-form {
-  position: relative;
 }
 
 .custom-dropdown {
@@ -182,6 +204,11 @@ h1 {
   outline: none;
 }
 
+.search-input {
+  position: relative;
+  
+}
+
 .search-input-main:focus {
     outline: 2px solid var(--ge-green-subtle);
 }
@@ -193,8 +220,8 @@ h1 {
   background-size: cover;
   background-color: transparent;
   position: absolute;
-  top: .4rem;
-  right: 1rem;
+  top: .1rem;
+  right: 1.3rem;
   border: none;
 }
 

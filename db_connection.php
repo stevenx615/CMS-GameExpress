@@ -9,6 +9,3 @@ try {
   print 'Error: ' . $e->getMessage();
   die();
 }
-
-session_start();
-print_r($_SESSION);
