@@ -1,28 +1,28 @@
 <?php
+require 'utilities.php';
 
 if (!isset($_GET['action'])) {
-  header('Location: index.php');
-  die();
+  redirect('index.php');
 }
 
 $action = $_GET['action'];
-
-// the role will be assigned to registered user,
-// using the role_id in Roles table, 3 indicates "User".
-$user_role_id = 3;
+// session_start();
 
 // connect to database
 require 'db_connection.php';
 
-session_start();
-
 switch ($action) {
   case 'signup': {
+      $page_title = 'Sign Up';
       $error_msgs = signup_validation();
       if (!empty($error_msgs)) {
         $_SESSION['error_msgs'] = $error_msgs;
-        header('Location: user-action.php?action=error-messages');
+        redirect('user-action.php?action=error-messages&pre=signup');
       }
+
+      // the role will be assigned to registered user,
+      // using the role_id in Roles table, 3 indicates "User".
+      $user_role_id = 3;
 
       // data sanitization
       $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -30,21 +30,65 @@ switch ($action) {
       $first_name = filter_input(INPUT_POST, 'firstname', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
       $last_name = filter_input(INPUT_POST, 'lastname', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-
       // password hashing
       $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-      $query = 'INSERT INTO users (username, password, email, first_name, last_name, role_id) values (:username, :password, :email, :first_name, :last_name, :role_id)';
-      $statement = $db_conn->prepare($query);
-      $statement->bindValue(':username', $username);
-      $statement->bindValue(':password', $password);
-      $statement->bindValue(':email', $email);
-      $statement->bindValue(':first_name', $first_name);
-      $statement->bindValue(':last_name', $last_name);
-      $statement->bindValue(':role_id', $user_role_id);
-      $statement->execute();
+
+      try {
+        $query = 'INSERT INTO users (username, password, email, first_name, last_name, role_id) values (:username, :password, :email, :first_name, :last_name, :role_id)';
+        $statement = $db_conn->prepare($query);
+        $statement->bindValue(':username', $username);
+        $statement->bindValue(':password', $password);
+        $statement->bindValue(':email', $email);
+        $statement->bindValue(':first_name', $first_name);
+        $statement->bindValue(':last_name', $last_name);
+        $statement->bindValue(':role_id', $user_role_id);
+        $success = $statement->execute();
+        $user_id = $db_conn->lastInsertId();
+      } catch (PDOException $ex) {
+        die('There is an error when creating user.');
+      }
+
+      if ($success) {
+        clear_signup_session();
+        $_SESSION['user_id'] = $user_id;
+        redirect('user-action.php?action=success-messages&pre=signup');
+      }
+
       break;
     };
   case 'login': {
+      $page_title = 'Log In';
+      $error_msgs = login_validation();
+      if (!empty($error_msgs)) {
+        $_SESSION['error_msgs'] = $error_msgs;
+        redirect('user-action.php?action=error-messages&pre=login');
+      }
+
+      $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+      $password = $_POST['password'];
+
+      try {
+        // validate the password with database
+        $query = 'SELECT * FROM users WHERE username = :username';
+        $statement = $db_conn->prepare($query);
+        $statement->bindValue(':username', $username);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+      } catch (PDOException $ex) {
+        die('There is an error when validating user.');
+      }
+
+      // pass validation
+      if (password_verify($password, $result['password'])) {
+        clear_login_session();
+        $_SESSION['user_id'] = $result['user_id'];
+        redirect('user-action.php?action=success-messages&pre=login');
+      } else {
+        $error_msgs[] = 'Password is incorrect.';
+        $_SESSION['error_msgs'] = $error_msgs;
+        redirect('user-action.php?action=error-messages&pre=login');
+      }
+
       break;
     };
   case 'error-messages': {
@@ -57,6 +101,20 @@ switch ($action) {
         $_SESSION['error_msgs'] = '';
       } else {
         $error_msgs[] = 'Unknown errors ocurred.';
+      }
+
+      // get the referer, sign up or log in
+      if (isset($_GET['pre'])) {
+        $previous_action = $_GET['pre'];
+      }
+      break;
+    }
+  case 'success-messages': {
+      $page_title = 'Successful Messages';
+
+      // get the referer, sign up or log in
+      if (isset($_GET['pre'])) {
+        $previous_action = $_GET['pre'];
       }
       break;
     }
@@ -97,6 +155,36 @@ function signup_validation()
   return $error_msgs;
 }
 
+// clear the sign up fields in session after sign up successfully
+function clear_signup_session()
+{
+  unset($_SESSION['signup_username']);
+  unset($_SESSION['signup_email']);
+  unset($_SESSION['signup_firstname']);
+  unset($_SESSION['signup_lastname']);
+}
+
+// validate the username and password
+function login_validation()
+{
+  $error_msgs = [];
+  if (empty($_POST['username'])) {
+    $error_msgs[] = 'Username is required.';
+  } else {
+    $_SESSION['login_username'] = $_POST['username'];
+  }
+  if (empty($_POST['password'])) {
+    $error_msgs[] = 'Password is required.';
+  }
+  return $error_msgs;
+}
+
+// clear the log in fields in session after log in successfully
+function clear_login_session()
+{
+  unset($_SESSION['login_username']);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -123,9 +211,22 @@ function signup_validation()
             <li><?= $msg ?></li>
           <?php endforeach ?>
         </ul>
-        <p class="mt-5"><a class="btn btn-outline-secondary px-5 py-2 fs-5" href="user.php?action=signup&error=1">Back to
-            Sign
-            Up</a></p>
+        <?php if ($previous_action == 'signup') : ?>
+          <p class="mt-5"><a class="btn btn-outline-secondary px-5 py-2 fs-5" href="user.php?action=signup&error=1">Back to
+              Sign
+              Up</a></p>
+        <?php elseif ($previous_action == 'login') :  ?>
+          <p class="mt-5"><a class="btn btn-outline-secondary px-5 py-2 fs-5" href="user.php?action=login&error=1">Back to
+              Log In</a></p>
+        <?php endif ?>
+      <?php elseif ($action == 'success-messages') : ?>
+        <?php if ($previous_action == 'signup') : ?>
+          <h1>Sign up successfully!</h1>
+          <p class="mt-3 fs-5">It will automatically jump to the home page after 3 seconds.</p>
+        <?php elseif ($previous_action == 'login') :  ?>
+          <h1>Log in successfully!</h1>
+          <p class="mt-3 fs-5">It will automatically jump to the home page after 3 seconds.</p>
+        <?php endif ?>
       <?php endif ?>
     </div>
   </main>
@@ -136,3 +237,8 @@ function signup_validation()
 </body>
 
 </html>
+<?php
+if ($action == 'success-messages') {
+  redirect_delay(3, 'index.php');
+}
+?>

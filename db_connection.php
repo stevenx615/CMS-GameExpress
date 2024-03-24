@@ -1,5 +1,4 @@
 <?php
-
 define('DB_DSN', 'mysql:host=localhost;dbname=game_express;charset=utf8');
 define('DB_USER', 'root');
 define('DB_PASS', '');
@@ -10,3 +9,6 @@ try {
   print 'Error: ' . $e->getMessage();
   die();
 }
+
+session_start();
+print_r($_SESSION);

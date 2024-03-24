@@ -1,32 +1,39 @@
 <?php
+require 'utilities.php';
 
-$page_title = '';
+session_start();
+print_r($_SESSION);
 
 // If no action parameter is obtained, return to the previous page.
 if (!isset($_GET['action'])) {
-  header("Location: index.php");
+  redirect('index.php');
 }
 
 $action = $_GET['action'];
 
-session_start();
+// session_start();
 
 switch ($action) {
   case 'signup': {
+      $page_title = 'Sign Up';
+
       // fill up the fields user previous filled
-      print_r($_SESSION);
-      retrieve_fields();
+      retrieve_signup_fields();
       break;
     }
   case 'login': {
+      $page_title = 'Login In';
+
+      // fill up the fields user previous filled
+      retrieve_login_fields();
       break;
     }
   default:
     break;
 }
 
-// retrieve the fields when back from error page
-function retrieve_fields()
+// retrieve the Sign Up fields when back from error page
+function retrieve_signup_fields()
 {
   global $username;
   global $email;
@@ -44,6 +51,19 @@ function retrieve_fields()
     $_SESSION['signup_email'] = '';
     $_SESSION['signup_firstname'] = '';
     $_SESSION['signup_lastname'] = '';
+  }
+}
+
+// retrieve the Log In fields when back from error page
+function retrieve_login_fields()
+{
+  global $username;
+  if (isset($_GET['error'])) {
+    if ($_GET['error'] == 1) {
+      $username = get_session_field('login_username');
+    }
+  } else {
+    $_SESSION['login_username'] = '';
   }
 }
 
@@ -101,6 +121,20 @@ $has_login = false;
           </div>
           <div class="mt-3 text-center fs-5">
             <span>Already have an account? <a href="user.php?action=login">Log In</a></span>
+          </div>
+        </form>
+      <?php elseif ($action == 'login') : ?>
+        <h1>Log in to your account.</h1>
+        <form action="user-action.php?action=login" method="POST" class="user-form">
+          <label for="username">Username</label>
+          <input type="text" name="username" id="username" value="<?= $username ?>" />
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" />
+          <div>
+            <button type="submit" class="btn-green btn-submit">LOG IN</button>
+          </div>
+          <div class="mt-3 text-center fs-5">
+            <span>Don't have an account? <a href="user.php?action=signup">Sign Up</a></span>
           </div>
         </form>
       <?php endif ?>
