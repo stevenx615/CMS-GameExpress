@@ -30,8 +30,6 @@ time, mark, audio, video {
   --ge-gray-subtle: #364040;
   --ge-gray-subtle2: #2F3233;
   --ge-gray-dark: #14191A;
-
-  --bs-dropdown-min-width: 15rem !important;
 }
 
 body {
@@ -68,10 +66,6 @@ h1 {
 .wrap {
   width: 1200px;
   /* border: 1px solid royalblue; */
-}
-
-.main {
-  
 }
 
 .navigation-link:link,
@@ -221,7 +215,7 @@ h1 {
   background-color: transparent;
   position: absolute;
   top: .1rem;
-  right: 1.3rem;
+  right: 1.5rem;
   border: none;
 }
 
@@ -233,7 +227,8 @@ h1 {
   filter: brightness(50%);
 }
 
-.user-form {
+.user-form,
+.user-account-form {
   margin-top: 3rem;
 }
 
@@ -242,7 +237,8 @@ h1 {
   font-size: 1.1rem;
 }
 
-.user-form input {
+.user-form input,
+.user-account-form input {
   background-color: var(--ge-gray-subtle);
   width: 22rem;
   height: 2.3rem;
@@ -257,12 +253,18 @@ h1 {
   outline: none;
 }
 
-.user-form input:focus {
+.user-form input:focus,
+.user-account-form input:focus {
   outline: 2px solid var(--ge-green-subtle);
 }
 
+.user-account-form label {
+  display: inline;
+  font-size: 1.1rem;
+}
+
 .btn-submit {
-  width: 100%;
+  width: 22rem;
   height: 2.8rem;
   margin-top: 2.5rem;
   font-size: 1.1rem;

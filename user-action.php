@@ -111,7 +111,52 @@ switch ($action) {
       unset($_SESSION['user']);
       redirect('user-action.php?action=success-messages&pre=signout');
       break;
-    }
+    };
+  case 'update-account': {
+      $page_title = 'Update Account';
+      $error_msgs = update_account_validation();
+      if (!empty($error_msgs)) {
+        $_SESSION['error_msgs'] = $error_msgs;
+        redirect('user-action.php?action=error-messages&pre=update-account');
+      }
+
+      // data sanitization
+      $user_id = filter_var($_SESSION['user']['user_id'], FILTER_SANITIZE_NUMBER_INT);
+      $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+      $first_name = filter_input(INPUT_POST, 'firstname', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+      $last_name = filter_input(INPUT_POST, 'lastname', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+      $password_query = '';
+      if (!empty($_POST['password'])) {
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        $password_query = ', password = :password';
+      }
+
+      $query = 'UPDATE users SET email = :email, first_name = :first_name, last_name = :last_name' . $password_query . ' WHERE user_id = :user_id';
+
+      try {
+        $statement = $db_conn->prepare($query);
+        if (!empty($password_query)) {
+          $statement->bindValue(':password', $password);
+        }
+        $statement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $statement->bindValue(':email', $email);
+        $statement->bindValue(':first_name', $first_name);
+        $statement->bindValue(':last_name', $last_name);
+        $success = $statement->execute();
+      } catch (PDOException $ex) {
+        die('There is an error when updating the user account.');
+      }
+
+      if ($success) {
+        $_SESSION['user']['email'] = $email;
+        $_SESSION['user']['first_name'] = $first_name;
+        $_SESSION['user']['last_name'] = $last_name;
+      }
+
+      redirect('user-action.php?action=success-messages&pre=update-account');
+      break;
+    };
   case 'error-messages': {
       $page_title = 'Errors Occurred';
       $error_msgs = [];
@@ -129,7 +174,7 @@ switch ($action) {
         $previous_action = $_GET['pre'];
       }
       break;
-    }
+    };
   case 'success-messages': {
       $page_title = 'Successful Messages';
 
@@ -138,7 +183,7 @@ switch ($action) {
         $previous_action = $_GET['pre'];
       }
       break;
-    }
+    };
   default:
     redirect('index.php');
     break;
@@ -177,15 +222,6 @@ function signup_validation()
   return $error_msgs;
 }
 
-// clear the sign up fields in session after sign up successfully
-function clear_signup_session()
-{
-  unset($_SESSION['signup_username']);
-  unset($_SESSION['signup_email']);
-  unset($_SESSION['signup_firstname']);
-  unset($_SESSION['signup_lastname']);
-}
-
 // validate the username and password
 function login_validation()
 {
@@ -199,6 +235,34 @@ function login_validation()
     $error_msgs[] = 'Password is required.';
   }
   return $error_msgs;
+}
+
+// validation user update info and save valid fields to session
+function update_account_validation()
+{
+  $error_msgs = [];
+  if (!empty($_POST['password']) && $_POST['password'] != $_POST['confirm-password']) {
+    $error_msgs[] = 'Password and Confirm Password must be match.';
+  }
+  if (!filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL)) {
+    $error_msgs[] = 'A valid email is required.';
+  }
+  if (empty($_POST['firstname'])) {
+    $error_msgs[] = 'First name is required.';
+  }
+  if (empty($_POST['lastname'])) {
+    $error_msgs[] = 'Last name is required.';
+  }
+  return $error_msgs;
+}
+
+// clear the sign up fields in session after sign up successfully
+function clear_signup_session()
+{
+  unset($_SESSION['signup_username']);
+  unset($_SESSION['signup_email']);
+  unset($_SESSION['signup_firstname']);
+  unset($_SESSION['signup_lastname']);
 }
 
 // clear the log in fields in session after log in successfully
@@ -241,16 +305,29 @@ function clear_login_session()
         <?php elseif ($previous_action == 'login') :  ?>
           <p class="mt-5"><a class="btn btn-outline-secondary px-5 py-2 fs-5" href="user.php?action=login&error=1">Back to
               Log In</a></p>
+        <?php elseif ($previous_action == 'update-account') :  ?>
+          <p class="mt-5"><a class="btn btn-outline-secondary px-5 py-2 fs-5" href="account.php">Back to
+              My Account</a></p>
         <?php endif ?>
       <?php elseif ($action == 'success-messages') : ?>
         <?php if ($previous_action == 'signup') : ?>
           <h1>Sign up successfully!</h1>
+          <p class="mt-3 fs-5">It will automatically jump to the <a href="index.php" style="color: #00E46A;">home page</a>
+            after 3 seconds.</p>
         <?php elseif ($previous_action == 'login') :  ?>
           <h1>Log in successfully!</h1>
+          <p class="mt-3 fs-5">It will automatically jump to the <a href="index.php" style="color: #00E46A;">home page</a>
+            after 3 seconds.</p>
         <?php elseif ($previous_action == 'signout') :  ?>
           <h1>Sign out successfully!</h1>
+          <p class="mt-3 fs-5">It will automatically jump to the <a href="index.php" style="color: #00E46A;">home page</a>
+            after 3 seconds.</p>
+        <?php elseif ($previous_action == 'update-account') :  ?>
+          <h1>Your account has been successfully updated!</h1>
+          <p class="mt-3 fs-5">It will automatically jump to the <a href="account.php" style="color: #00E46A;">My
+              Account</a>
+            after 3 seconds.</p>
         <?php endif ?>
-        <p class="mt-3 fs-5">It will automatically jump to the home page after 3 seconds.</p>
       <?php endif ?>
     </div>
   </main>
@@ -263,6 +340,10 @@ function clear_login_session()
 </html>
 <?php
 if ($action == 'success-messages') {
-  redirect_delay(3, 'index.php');
+  if ($previous_action == 'signup' || $previous_action == 'login' || $previous_action == 'signout') {
+    redirect_delay(3, 'index.php');
+  } elseif ($previous_action == 'update-account') {
+    redirect_delay(3, 'account.php');
+  }
 }
 ?>

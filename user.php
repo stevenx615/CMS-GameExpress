@@ -79,9 +79,6 @@ function clear_session_field()
   unset($_SESSION['login_username']);
   unset($_SESSION['error_msgs']);
 }
-
-$has_login = false;
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -109,7 +106,7 @@ $has_login = false;
           <input type="text" name="username" id="username" value="<?= $username ?>" />
           <label for="password">Password</label>
           <input type="password" name="password" id="password" />
-          <label for="password">Confirm Password</label>
+          <label for="confirm-password">Confirm Password</label>
           <input type="password" name="confirm-password" id="confirm-password" />
           <label for="email">Email</label>
           <input type="email" name="email" id="email" value="<?= $email ?>" />
@@ -117,7 +114,7 @@ $has_login = false;
           <input type="text" name="firstname" id="firstname" value="<?= $first_name ?>" />
           <label for="lastname">Last Name</label>
           <input type="text" name="lastname" id="lastname" value="<?= $last_name ?>" />
-          <div>
+          <div class="text-center">
             <button type="submit" class="btn-green btn-submit">SIGN UP</button>
           </div>
           <div class="mt-3 text-center fs-5">
@@ -131,7 +128,7 @@ $has_login = false;
           <input type="text" name="username" id="username" value="<?= $username ?>" />
           <label for="password">Password</label>
           <input type="password" name="password" id="password" />
-          <div>
+          <div class="text-center">
             <button type="submit" class="btn-green btn-submit">LOG IN</button>
           </div>
           <div class="mt-3 text-center fs-5">
