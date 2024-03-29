@@ -1,6 +1,11 @@
 document.addEventListener("DOMContentLoaded", load);
 
 function load() {
+  navActiveEffect();
+}
+
+// navigation active effect
+function navActiveEffect() {
   var url = window.location.pathname;
   console.log(url);
   var menuItems = document.querySelectorAll(".navigation-link");

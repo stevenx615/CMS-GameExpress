@@ -2,7 +2,7 @@
   <div class="wrap d-flex justify-content-between">
     <?php if (is_logged_in() && has_role([1])) : ?>
       <div>
-        <a class="btn btn-green px-5" href="admin.php">Admin Center</a>
+        <a class="btn btn-green px-5" href="admin-posts.php">Admin Center</a>
       </div>
     <?php endif ?>
     <div class="flex-grow-1 text-end">

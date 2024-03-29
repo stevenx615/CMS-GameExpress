@@ -1,8 +1,8 @@
 <?php
 session_start();
 print_r($_SESSION);
-require 'db_connection.php';
 require 'authentication.php';
+require 'db_connection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +16,7 @@ require 'authentication.php';
   ?>
 </head>
 
-<body class="bg-dark d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100">
   <?php
   include "template-header.php";
   include "template-search.php";

@@ -35,7 +35,7 @@ switch ($action) {
       $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
       try {
-        $query = 'INSERT INTO users (username, password, email, first_name, last_name, role_id) values (:username, :password, :email, :first_name, :last_name, :role_id)';
+        $query = 'INSERT INTO users (username, password, email, first_name, last_name, role_id) VALUES (:username, :password, :email, :first_name, :last_name, :role_id)';
         $statement = $db_conn->prepare($query);
         $statement->bindValue(':username', $username);
         $statement->bindValue(':password', $password);
@@ -84,6 +84,13 @@ switch ($action) {
         $result = $statement->fetch(PDO::FETCH_ASSOC);
       } catch (PDOException $ex) {
         die('There is an error when validating user.');
+      }
+
+      if (empty($result)) {
+        $error_msgs[] = 'Username is incorrect.';
+        $_SESSION['error_msgs'] = $error_msgs;
+        redirect('user-action.php?action=error-messages&pre=login');
+        redirect('admin-categories.php');
       }
 
       // pass validation
@@ -301,7 +308,7 @@ function clear_login_session()
   ?>
 </head>
 
-<body class="bg-dark d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100">
   <?php
   include "template-header-lite.php";
   ?>

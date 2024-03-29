@@ -92,7 +92,7 @@ function clear_session_field()
   ?>
 </head>
 
-<body class="bg-dark d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100">
   <?php
   include "template-header-lite.php";
   ?>
