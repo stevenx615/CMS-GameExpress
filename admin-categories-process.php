@@ -4,7 +4,7 @@ require 'utilities.php';
 require 'admin-authentication.php';
 
 // check permission
-if (!(is_logged_in() && has_role([1, 2]))) {
+if (!(is_logged_in() && has_role([1]))) {
   redirect('index.php');
 }
 
@@ -45,7 +45,7 @@ switch ($action) {
         redirect('admin-categories-process.php?action=error-messages&pre=edit');
       }
 
-      $category_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+      $category_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
       $category_name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
       $query = "UPDATE categories SET category_name = :category_name WHERE category_id = :category_id";

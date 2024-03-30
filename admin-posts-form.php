@@ -46,7 +46,7 @@ switch ($action) {
         redirect('admin-posts.php');
       }
 
-      $category_id = $post_row['category_id'];
+      $user_id = $post_row['category_id'];
       $game_id = $post_row['game_id'];
       $author_id = $post_row['author_id'];
       $post_thumbnail = $post_row['post_thumbnail'];
@@ -58,7 +58,7 @@ switch ($action) {
       $author_fullname = $post_row['first_name'] . ' ' . $post_row['last_name'];
 
       // if login user is not the author, then back to posts page
-      if (!has_role([1, $author_id])) {
+      if ($author_id != $_SESSION['user']['user_id']) {
         $error_msgs[] = 'You do not have permission to edit this post.';
         $_SESSION['error_msgs'] = $error_msgs;
         redirect('admin-posts-process.php?action=error-messages');
@@ -139,6 +139,9 @@ function edit_validation(&$post_id)
       plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
       toolbar1: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough',
       toolbar2: 'link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+
+      // without images_upload_url set, Upload tab won't show up
+      images_upload_url: 'admin-tinymce-upload-handler.php'
     });
   </script>
 </head>
@@ -176,7 +179,10 @@ function edit_validation(&$post_id)
                 <label for="category">Category</label>
                 <select class="custom-dropdown-admin" name="category" id="category">
                   <?php foreach ($category_rows as $category_row) : ?>
-                    <option value="<?= $category_row['category_id'] ?>"><?= $category_row['category_name'] ?></option>
+                    <option value="<?= $category_row['category_id'] ?>" <?php if (!empty($post_row)) {
+                                                                          echo $post_row['category_id'] == $category_row['category_id'] ? 'selected' : '';
+                                                                        } ?>>
+                      <?= $category_row['category_name'] ?></option>
                   <?php endforeach ?>
                 </select>
               </div>
@@ -195,7 +201,7 @@ function edit_validation(&$post_id)
             <label for="content">Content</label>
             <textarea name="content" id="content"><?= empty($post_row) ? '' : $post_content ?></textarea>
             <div>
-              <button type="submit" class="btn-green btn-submit">Update</button>
+              <button type="submit" class="btn-green btn-submit"><?= !empty($post_row) ? 'Update' : 'Add' ?></button>
             </div>
           </form>
         </div>
@@ -207,6 +213,8 @@ function edit_validation(&$post_id)
   include "template-admin-footer.php";
   print_r($_SESSION);
   ?>
+
+
 </body>
 
 </html>

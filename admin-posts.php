@@ -15,10 +15,23 @@ require 'db_connection.php';
 // get user setting preference
 $admin_preference = get_admin_preference();
 
-$query = "SELECT * FROM posts p JOIN categories c ON p.category_id = c.category_id ORDER BY p.post_id " . $admin_preference['orderby'];
-$statement = $db_conn->prepare($query);
-$statement->execute();
-$rows = $statement->fetchAll();
+$author_query = '';
+if (has_role([2])) {
+  $author_query = 'WHERE author_id = :user_id ';
+}
+
+$query = "SELECT * FROM posts p JOIN categories c ON p.category_id = c.category_id " . $author_query . "ORDER BY p.post_id " . $admin_preference['orderby'];
+try {
+  $statement = $db_conn->prepare($query);
+  if (!empty($author_query)) {
+    $statement->bindValue(':user_id', $_SESSION['user']['user_id']);
+  }
+  $statement->execute();
+  $rows = $statement->fetchAll();
+} catch (PDOException $e) {
+  die('There is an error when deleting the user.');
+}
+
 $posts_count = count($rows);
 ?>
 <!DOCTYPE html>

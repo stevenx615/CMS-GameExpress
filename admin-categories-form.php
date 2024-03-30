@@ -23,12 +23,12 @@ switch ($action) {
     };
   case 'edit': {
       $page_title = 'Edit Post';
-      $category_id = null;
-      edit_validation($category_id);
+      $user_id = null;
+      edit_validation($user_id);
       $query = "SELECT * FROM categories WHERE category_id = :category_id";
       try {
         $statement = $db_conn->prepare($query);
-        $statement->bindValue(":category_id", $category_id, PDO::PARAM_INT);
+        $statement->bindValue(":category_id", $user_id, PDO::PARAM_INT);
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
       } catch (PDOException $e) {
@@ -90,7 +90,7 @@ function edit_validation(&$category_id)
           </div>
           <div>
             <form action="admin-categories-process.php?action=add" method="POST" class="admin-form" id="admin-form" onsubmit="validateForm(event, ['name'])">
-              <label for="game">Name</label>
+              <label for="name">Name</label>
               <input type="text" name="name" id="name" style="width: 75%;" />
               <div class="field_error" id="name_error"></div>
               <div>

@@ -4,10 +4,10 @@ require 'utilities.php';
 require 'admin-authentication.php';
 require 'admin-upload-image.php';
 
-// check permission
-// if (!(is_logged_in() && has_role([1, 2]))) {
-//   redirect('index.php');
-// }
+//check permission
+if (!(is_logged_in() && has_role([1, 2]))) {
+  redirect('index.php');
+}
 
 if (!isset($_GET['action'])) {
   redirect('index.php');
@@ -39,7 +39,7 @@ switch ($action) {
       $post_created_date = date('Y-m-d H:i:s');
       $post_modified_date = date('Y-m-d H:i:s');
       $author_id = $_SESSION['user']['user_id'];
-      $category_id = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
+      $user_id = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
       $game_id = filter_input(INPUT_POST, 'game_id', FILTER_SANITIZE_NUMBER_INT);
 
       if (empty($game_id)) {
@@ -57,7 +57,7 @@ switch ($action) {
         $statement->bindValue(':post_created_date', $post_created_date);
         $statement->bindValue(':post_modified_date', $post_modified_date);
         $statement->bindValue(':author_id', $author_id, PDO::PARAM_INT);
-        $statement->bindValue(':category_id', $category_id, PDO::PARAM_INT);
+        $statement->bindValue(':category_id', $user_id, PDO::PARAM_INT);
         $statement->bindValue(':game_id', $game_id, PDO::PARAM_INT);
         $statement->execute();
         redirect('admin-posts.php');
@@ -74,7 +74,7 @@ switch ($action) {
         redirect('admin-posts-process.php?action=error-messages&pre=edit');
       }
 
-      $post_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+      $post_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 
       // retrieve the author id to validate permission 
       $post_query = "SELECT author_id FROM posts WHERE post_id = :post_id";
@@ -107,7 +107,7 @@ switch ($action) {
       $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
       $content = $_POST['content'];
       $post_modified_date = date('Y-m-d H:i:s');
-      $category_id = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
+      $user_id = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
       $game_id = filter_input(INPUT_POST, 'game_id', FILTER_SANITIZE_NUMBER_INT);
 
       if (empty($game_id)) {
@@ -123,7 +123,7 @@ switch ($action) {
         $statement->bindValue(':post_thumbnail', $cover_thumbnail_image);
         $statement->bindValue(':post_content', $content);
         $statement->bindValue(':post_modified_date', $post_modified_date);
-        $statement->bindValue(':category_id', $category_id, PDO::PARAM_INT);
+        $statement->bindValue(':category_id', $user_id, PDO::PARAM_INT);
         $statement->bindValue(':game_id', $game_id, PDO::PARAM_INT);
         $statement->execute();
         redirect('admin-posts.php');
@@ -139,7 +139,7 @@ switch ($action) {
         redirect('admin-posts-process.php?action=error-messages&pre=delete');
       }
 
-      $post_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+      $post_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
       $query = "DELETE FROM posts WHERE post_id = :post_id";
       try {
         $statement = $db_conn->prepare($query);
@@ -163,6 +163,7 @@ switch ($action) {
         $error_msgs[] = 'Unknown errors ocurred.';
       }
 
+      $previous_action = '';
       if (isset($_GET['pre'])) {
         $previous_action = $_GET['pre'];
       }
@@ -253,7 +254,7 @@ function delete_post_validation()
                 to
                 Add Post</a></p>
           <?php else : ?>
-            <p class="mt-5"><a class="btn btn-outline-secondary px-5 py-2 fs-5" href="admin-posts-form.php">Back
+            <p class="mt-5"><a class="btn btn-outline-secondary px-5 py-2 fs-5" href="admin-posts.php">Back
                 to Posts</a></p>
           <?php endif ?>
         <?php endif ?>

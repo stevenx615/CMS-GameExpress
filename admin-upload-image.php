@@ -11,16 +11,21 @@ function handle_image_upload($files)
   global $upload_folder;
   if (isset($files) && $files['error'] === 0) {
     $temporary_path = $files['tmp_name'];
-    $file_name = $files['name'];
-    $new_path = file_upload_path($file_name, $upload_folder);
+    $file_name = $files['name']; // with extension
+
+    $new_name = create_image_name();
+    $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
+    $new_file_name = $new_name . '.' . $file_extension;
+
+    $new_path = file_upload_path($new_file_name, $upload_folder);
 
     if (file_is_an_image($temporary_path, $new_path)) {
       // Save the uploaded file
       if (move_uploaded_file($temporary_path, $new_path)) {
         // Resize the image to different sizes
-        resizeImage($new_path, 300, 200, 'thumbnail');
-        $original_relative_path = $upload_folder . '/' . $file_name;
-        $thumbnail_relative_path = $upload_folder . '/' . pathinfo($new_path, PATHINFO_FILENAME) . '_thumbnail.' . pathinfo($new_path, PATHINFO_EXTENSION);
+        resizeImage($new_path, 500, 300, 'thumbnail');
+        $original_relative_path = $upload_folder . '/' . $new_file_name;
+        $thumbnail_relative_path = $upload_folder . '/' . $new_name . '_thumbnail.' . $file_extension;
         return [$original_relative_path, $thumbnail_relative_path];
       }
     }
@@ -85,4 +90,13 @@ function resizeImage($originalImagePath, $width, $height, $suffix)
 
   imagedestroy($image_p);
   imagedestroy($image);
+}
+
+// create a image name based on date, time, and random numbers
+function create_image_name()
+{
+  $date_time = date("YmdHis");
+  $random_number = rand(1000, 9999);
+  $date_time_with_random = $date_time . $random_number;
+  return $date_time_with_random;
 }

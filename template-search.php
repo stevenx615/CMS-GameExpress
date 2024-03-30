@@ -1,6 +1,6 @@
 <div class="search-section py-3 d-flex justify-content-center">
   <div class="wrap d-flex justify-content-between">
-    <?php if (is_logged_in() && has_role([1])) : ?>
+    <?php if (is_logged_in() && has_role([1, 2])) : ?>
       <div>
         <a class="btn btn-green px-5" href="admin-posts.php">Admin Center</a>
       </div>
