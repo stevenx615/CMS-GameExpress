@@ -59,9 +59,11 @@ switch ($action) {
 
       // if login user is not the author, then back to posts page
       if ($author_id != $_SESSION['user']['user_id']) {
-        $error_msgs[] = 'You do not have permission to edit this post.';
-        $_SESSION['error_msgs'] = $error_msgs;
-        redirect('admin-posts-process.php?action=error-messages');
+        if (!has_role([1])) {
+          $error_msgs[] = 'You do not have permission to edit this post.';
+          $_SESSION['error_msgs'] = $error_msgs;
+          redirect('admin-posts-process.php?action=error-messages');
+        }
       }
 
 
@@ -136,6 +138,7 @@ function edit_validation(&$post_id)
   <script>
     tinymce.init({
       selector: 'textarea#content',
+      height: 800,
       plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
       toolbar1: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough',
       toolbar2: 'link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
@@ -169,7 +172,7 @@ function edit_validation(&$post_id)
                 <?php if (!empty($post_row)) : ?>
                   <label>Author ID</label>
                   <div class="admin-form-field-plain-text"><?= $author_username ?></div>
-                  <label>Author Full Name</label>
+                  <label>Author</label>
                   <div class="admin-form-field-plain-text"><?= $author_fullname ?></div>
                   <label>Created Date</label>
                   <div class="admin-form-field-plain-text"><?= $post_created_date ?></div>

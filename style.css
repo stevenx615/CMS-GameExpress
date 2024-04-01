@@ -308,9 +308,90 @@ h1 {
   background-color: var(--ge-green);
 }
 
+.post-top {
+  margin-bottom: 2rem;
+  height: 17rem;
+  position: relative;
+  background-position: center;
+  background-size: cover;
+}
 
+.post-top-bar {
+  width: 100%;
+  height: 40%;
+  background-color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  bottom: 0;
+}
 
-/* --------Admin Center------------------------ */
+.post-top-title {
+  margin: 0 1rem;
+  margin-top: .5rem;
+  width: 100%;
+  height: 4rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.post-top-author {
+  margin: 0 1rem;
+  margin-top: .3rem;
+  font-size: 1rem;
+  font-style: italic;
+}
+
+.author-text {
+  color: var(--ge-green-subtle);
+  font-weight: 600;
+}
+
+.post-row {
+  margin: .7rem 0;
+  height: 10rem;
+  overflow: hidden;
+}
+
+.post-left {
+  width: 20rem;
+  overflow: hidden;
+  text-align: center;
+}
+
+.post-left .post-thumbnail {
+  width: 100%;
+}
+
+.post-right {
+  overflow: hidden;
+}
+
+.post-right .post-category {
+  font-weight: 600;
+  color: var(--ge-green)
+}
+
+.post-right .post-title {
+  margin-top: .5rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.post-right .post-title a{
+  line-height: 1.2;
+}
+
+.post-right .post-author {
+  margin-top: .5rem;
+  font-style: italic;
+}
+
+.post-line {
+  margin: .5rem 0;
+}
+
+/* ==================  Admin Center ================================================== */
 .admin-sidebar {
   background-color: var(--ge-gray-subtle3);
 }
@@ -445,7 +526,6 @@ h1 {
 }
 
 .custom-dropdown-admin {
-  
   appearance: none;
   background: url("data:image/svg+xml,<svg height='15px' width='15px' viewBox='0 0 16 16' fill='%23018940' xmlns='http://www.w3.org/2000/svg'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>") no-repeat;
   background-position: calc(100% - 0.75rem) center !important;

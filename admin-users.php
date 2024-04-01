@@ -89,7 +89,7 @@ $users_count = count($rows);
                     <td><?= $row['first_name'] . ' ' . $row['last_name'] ?></td>
                     <td><?= $row['role_name'] ?></td>
                     <td>
-                      <a class="operate-icon tooltip-view" href="admin_users_form.php?action=view&pid=<?= $row['user_id'] ?>"><img src=" images/icon-view.png" alt="View" /></a>
+                      <a class="operate-icon tooltip-view" href="admin-users-form.php?action=view&id=<?= $row['user_id'] ?>"><img src=" images/icon-view.png" alt="View" /></a>
                       <a class="operate-icon tooltip-edit" href="admin-users-form.php?action=edit&id=<?= $row['user_id'] ?>"><img src=" images/icon-edit.png" alt="Edit" /></a>
                       <a class="operate-icon tooltip-delete" href="admin-users-process.php?action=delete&id=<?= $row['user_id'] ?>" onclick="return confirm('Are you sure you want to delete this user? Deleting a user will result in the deletion of all posts made by that user.')"><img src=" images/icon-delete.png" alt="Delete" /></a>
                     </td>

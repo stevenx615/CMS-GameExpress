@@ -89,10 +89,12 @@ switch ($action) {
       $author_id = $post_row['author_id'];
 
       // if login user is not the author, then back to posts page
-      if (!has_role([1, $author_id])) {
-        $error_msgs[] = 'You do not have permission to edit this post.';
-        $_SESSION['error_msgs'] = $error_msgs;
-        redirect('admin-posts-process.php?action=error-messages');
+      if ($author_id != $_SESSION['user']['user_id']) {
+        if (!has_role([1])) {
+          $error_msgs[] = 'You do not have permission to edit this post.';
+          $_SESSION['error_msgs'] = $error_msgs;
+          redirect('admin-posts-process.php?action=error-messages');
+        }
       }
 
       $cover_image = '';
@@ -104,26 +106,34 @@ switch ($action) {
         $cover_thumbnail_image = $file_paths[1];
       }
 
+      // won't update the image and thumbnail if no image is uploaded
+      $image_query = '';
+      if ($cover_image != '') {
+        $image_query = 'post_image = :post_image, post_thumbnail = :post_thumbnail, ';
+      }
+
       $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
       $content = $_POST['content'];
       $post_modified_date = date('Y-m-d H:i:s');
-      $user_id = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
+      $category_id = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
       $game_id = filter_input(INPUT_POST, 'game_id', FILTER_SANITIZE_NUMBER_INT);
 
       if (empty($game_id)) {
         $game_id = null;
       }
 
-      $query = "UPDATE posts SET post_title = :post_title, post_image = :post_image, post_thumbnail = :post_thumbnail, post_content = :post_content, post_modified_date = :post_modified_date, category_id = :category_id, game_id = :game_id WHERE post_id = :post_id";
+      $query = "UPDATE posts SET post_title = :post_title, " . $image_query . "post_content = :post_content, post_modified_date = :post_modified_date, category_id = :category_id, game_id = :game_id WHERE post_id = :post_id";
       try {
         $statement = $db_conn->prepare($query);
+        if ($image_query != '') {
+          $statement->bindValue(':post_image', $cover_image);
+          $statement->bindValue(':post_thumbnail', $cover_thumbnail_image);
+        }
         $statement->bindValue(':post_id', $post_id);
         $statement->bindValue(':post_title', $title);
-        $statement->bindValue(':post_image', $cover_image);
-        $statement->bindValue(':post_thumbnail', $cover_thumbnail_image);
         $statement->bindValue(':post_content', $content);
         $statement->bindValue(':post_modified_date', $post_modified_date);
-        $statement->bindValue(':category_id', $user_id, PDO::PARAM_INT);
+        $statement->bindValue(':category_id', $category_id, PDO::PARAM_INT);
         $statement->bindValue(':game_id', $game_id, PDO::PARAM_INT);
         $statement->execute();
         redirect('admin-posts.php');

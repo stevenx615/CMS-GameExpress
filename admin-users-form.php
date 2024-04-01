@@ -73,8 +73,18 @@ switch ($action) {
         die('There is an error when viewing the user.');
       }
 
-      if (empty($user_row)) {
+      if (!$user_row) {
         redirect('admin-users.php');
+      }
+
+      $posts_query = "SELECT COUNT(*) FROM posts WHERE author_id = :user_id";
+      try {
+        $statement = $db_conn->prepare($posts_query);
+        $statement->bindValue(":user_id", $user_id, PDO::PARAM_INT);
+        $statement->execute();
+        $post_count = $statement->fetchColumn();
+      } catch (PDOException $e) {
+        die('There is an error when viewing the user.');
       }
       break;
     };
@@ -182,6 +192,34 @@ function edit_validation(&$category_id)
               <div class="field_error" id="match_password_error"></div>
               <button type="submit" class="btn-green btn-submit">Submit</button>
             </form>
+          </div>
+        <?php elseif ($action == 'view') : ?>
+          <div class="mt-4">
+            <h1>
+              User Details
+            </h1>
+          </div>
+          <div class="mt-5 ms-5">
+            <div class="row mt-4">
+              <div class="col-2 text-end">Role: </div>
+              <div class="col"><?= $user_row['role_name'] ?></div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-2 text-end">Username (ID): </div>
+              <div class="col"><?= $user_row['username'] ?></div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-2 text-end">Name: </div>
+              <div class="col"><?= $user_row['first_name'] . ' ' . $user_row['last_name'] ?></div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-2 text-end">Email: </div>
+              <div class="col"><?= $user_row['email'] ?></div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-2 text-end">Posts Published: </div>
+              <div class="col"><?= $post_count ?></div>
+            </div>
           </div>
         <?php endif ?>
       </div>

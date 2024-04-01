@@ -87,10 +87,10 @@ $posts_count = count($rows);
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th style="width: 4rem;">#</th>
+                  <th style="width: 3rem;">#</th>
                   <th>Title</th>
-                  <th style="width: 10rem;">Category</th>
-                  <th style="width: 10rem;">Modified</th>
+                  <th style="width: 7rem;">Category</th>
+                  <th style="width: 8rem;">Modified</th>
                   <th style="width: 8rem;">Operation</th>
                 </tr>
               </thead>
@@ -98,7 +98,8 @@ $posts_count = count($rows);
                 <?php foreach ($rows as $row) : ?>
                   <tr>
                     <td><?= $row['post_id'] ?></td>
-                    <td><?= limit_words($row['post_title'], 9) ?></td>
+                    <td><a href="admin-posts-form.php?action=edit&id=<?= $row['post_id'] ?>"><?= limit_words($row['post_title'], 10) ?></a>
+                    </td>
                     <td><?= $row['category_name'] ?></td>
                     <td><?= date('F d, Y', strtotime($row['post_modified_date'])) ?></td>
                     <td>

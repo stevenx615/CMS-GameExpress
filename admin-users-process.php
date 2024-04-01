@@ -70,7 +70,7 @@ switch ($action) {
         $password_query = ', password = :password';
       }
 
-      $query = 'UPDATE users SET username = :username, email = :email, first_name = :first_name, last_name = :last_name' . $password_query . ' WHERE user_id = :user_id';
+      $query = 'UPDATE users SET username = :username, email = :email, first_name = :first_name, last_name = :last_name, role_id = :role_id' . $password_query . ' WHERE user_id = :user_id';
 
       try {
         $statement = $db_conn->prepare($query);
@@ -82,6 +82,7 @@ switch ($action) {
         $statement->bindValue(':email', $email);
         $statement->bindValue(':first_name', $first_name);
         $statement->bindValue(':last_name', $last_name);
+        $statement->bindValue(':role_id', $role_id);
         $success = $statement->execute();
       } catch (PDOException $e) {
         die('There is an error when editing the user.');
