@@ -142,6 +142,7 @@ function edit_validation(&$post_id)
       plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
       toolbar1: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough',
       toolbar2: 'link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+      font_size_formats: '8px 10px 12px 14px 16px 18px 24px 36px 48px',
 
       // without images_upload_url set, Upload tab won't show up
       images_upload_url: 'admin-tinymce-upload-handler.php'

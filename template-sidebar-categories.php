@@ -11,7 +11,7 @@ try {
 ?>
 <?php if (!empty($category_rows)) : ?>
   <div class="category_sidebar mt-3">
-    <h2>Categories</h2>
+    <h2>Post Categories</h2>
     <ul>
       <?php foreach ($category_rows as $category_row) : ?>
         <li><a href="search.php?cid=<?= $category_row['category_id'] ?>"><?= $category_row['category_name'] ?></a>
