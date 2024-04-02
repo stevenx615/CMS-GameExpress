@@ -14,8 +14,10 @@ require 'db_connection.php';
 
 // get user setting preference
 $admin_preference = get_admin_preference();
+$user_sortby_query = get_user_sortby_query($admin_preference['user_sortby']);
+$orderby_query = get_orderby_query($admin_preference['orderby']);
 
-$query = "SELECT * FROM users u JOIN roles r ON u.role_id = r.role_id ORDER BY u.user_id " . $admin_preference['orderby'];
+$query = "SELECT * FROM users u JOIN roles r ON u.role_id = r.role_id" . $user_sortby_query . $orderby_query;
 $statement = $db_conn->prepare($query);
 $statement->execute();
 $rows = $statement->fetchAll();
@@ -50,14 +52,20 @@ $users_count = count($rows);
         </div>
         <div>
           <div class="row mt-4" style="color:#929AA6;">
-            <div class="col">Found <span style="color:#DEE0E0;"><?= $users_count ?></span> Games</div>
+            <div class="col-4">Found <span style="color:#DEE0E0;"><?= $users_count ?></span> Users</div>
             <div class="col text-end fs-6">
               <form name="list-preference-form" method="POST" action="admin-user-preference.php">
-                <label for="orderby">Order by</label>
+                <label for="orderby">Sort by</label>
+                <select class="custom-dropdown-light dropdown-orderby ms-1" name="user_sortby" id="user_sortby" onchange="this.form.submit()">
+                  <?php foreach (UserSortBy::cases() as $option) : ?>
+                    <option value="<?= $option->value ?>" <?= $admin_preference['user_sortby'] == $option->value ? 'selected' : '' ?>>
+                      <?= $option->value ?></option>
+                  <?php endforeach ?>
+                </select>
                 <select class="custom-dropdown-light dropdown-orderby ms-1 me-4" name="orderby" id="orderby" onchange="this.form.submit()">
                   <?php foreach (OrderBy::cases() as $option) : ?>
                     <option value="<?= $option->value ?>" <?= $admin_preference['orderby'] == $option->value ? 'selected' : '' ?>>
-                      <?= $option->value == 'desc' ? 'Latest' : 'Oldest' ?></option>
+                      <?= $option->value ?></option>
                   <?php endforeach ?>
                 </select>
                 <select class="custom-dropdown-light dropdown-pagesize me-1" name="pagesize" id="pagesize" onchange="this.form.submit()">

@@ -14,13 +14,19 @@ require 'db_connection.php';
 
 // get user setting preference
 $admin_preference = get_admin_preference();
+$post_sortby_query = get_post_sortby_query($admin_preference['post_sortby']);
+$orderby_query = get_orderby_query($admin_preference['orderby']);
 
 $author_query = '';
 if (has_role([2])) {
-  $author_query = 'WHERE author_id = :user_id ';
+  $author_query = ' WHERE p.author_id = :user_id';
 }
 
-$query = "SELECT * FROM posts p JOIN categories c ON p.category_id = c.category_id " . $author_query . "ORDER BY p.post_id " . $admin_preference['orderby'];
+$query = "SELECT * 
+          FROM posts p 
+            JOIN categories c ON p.category_id = c.category_id
+            JOIN users u ON p.author_id = u.user_id" . $author_query . $post_sortby_query . $orderby_query;
+
 try {
   $statement = $db_conn->prepare($query);
   if (!empty($author_query)) {
@@ -29,7 +35,7 @@ try {
   $statement->execute();
   $rows = $statement->fetchAll();
 } catch (PDOException $e) {
-  die('There is an error when deleting the user.');
+  die('There is an error when retrieving posts.');
 }
 
 $posts_count = count($rows);
@@ -63,14 +69,20 @@ $posts_count = count($rows);
         </div>
         <div>
           <div class="row mt-4" style="color:#929AA6;">
-            <div class="col">Found <span style="color:#DEE0E0;"><?= $posts_count ?></span> Games</div>
+            <div class="col-4">Found <span style="color:#DEE0E0;"><?= $posts_count ?></span> Posts</div>
             <div class="col text-end fs-6">
               <form name="list-preference-form" method="POST" action="admin-user-preference.php">
-                <label for="orderby">Order by</label>
+                <label for="orderby">Sort by</label>
+                <select class="custom-dropdown-light dropdown-orderby ms-1" name="post_sortby" id="post_sortby" onchange="this.form.submit()">
+                  <?php foreach (PostSortBy::cases() as $option) : ?>
+                    <option value="<?= $option->value ?>" <?= $admin_preference['post_sortby'] == $option->value ? 'selected' : '' ?>>
+                      <?= $option->value ?></option>
+                  <?php endforeach ?>
+                </select>
                 <select class="custom-dropdown-light dropdown-orderby ms-1 me-4" name="orderby" id="orderby" onchange="this.form.submit()">
                   <?php foreach (OrderBy::cases() as $option) : ?>
                     <option value="<?= $option->value ?>" <?= $admin_preference['orderby'] == $option->value ? 'selected' : '' ?>>
-                      <?= $option->value == 'desc' ? 'Latest' : 'Oldest' ?></option>
+                      <?= $option->value ?></option>
                   <?php endforeach ?>
                 </select>
                 <select class="custom-dropdown-light dropdown-pagesize me-1" name="pagesize" id="pagesize" onchange="this.form.submit()">
@@ -89,17 +101,19 @@ $posts_count = count($rows);
                 <tr>
                   <th style="width: 3rem;">#</th>
                   <th>Title</th>
-                  <th style="width: 7rem;">Category</th>
+                  <th style="width: 6rem;">Author</th>
+                  <th style="width: 6rem;">Category</th>
                   <th style="width: 8rem;">Modified</th>
-                  <th style="width: 8rem;">Operation</th>
+                  <th style="width: 8rem;">Controls</th>
                 </tr>
               </thead>
               <tbody>
                 <?php foreach ($rows as $row) : ?>
                   <tr>
                     <td><?= $row['post_id'] ?></td>
-                    <td><a href="admin-posts-form.php?action=edit&id=<?= $row['post_id'] ?>"><?= limit_words($row['post_title'], 10) ?></a>
+                    <td><a href="admin-posts-form.php?action=edit&id=<?= $row['post_id'] ?>"><?= $row['post_title'] ?></a>
                     </td>
+                    <td><?= $row['username'] ?></td>
                     <td><?= $row['category_name'] ?></td>
                     <td><?= date('F d, Y', strtotime($row['post_modified_date'])) ?></td>
                     <td>

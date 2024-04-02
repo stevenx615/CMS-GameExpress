@@ -9,6 +9,9 @@ require 'user-preference.php';
 // get user setting preference
 $preference = get_preference();
 
+$sortby_query = get_post_sortby_query($preference['post_sortby']);
+$orderby_query = get_orderby_query($preference['orderby']);
+
 // how many posts display on top
 $top_post_count = 2;
 
@@ -16,7 +19,8 @@ $query = "SELECT *
           FROM posts p
             JOIN users u ON p.author_id = u.user_id
             JOIN categories c ON p.category_id = c.category_id 
-          WHERE p.category_id = 1 ORDER BY p.post_id " . $preference['orderby'];
+          WHERE p.category_id = 1" . $sortby_query . $orderby_query;
+
 $statement = $db_conn->prepare($query);
 $statement->execute();
 ?>
@@ -47,11 +51,17 @@ $statement->execute();
         <?php if (is_logged_in()) : ?>
           <div class="col text-end fs-6">
             <form name="list-preference-form" method="POST" action="user-preference.php">
-              <label for="orderby">Order by</label>
+              <label for="orderby">Sort by</label>
+              <select class="custom-dropdown-light dropdown-orderby ms-1" name="post_sortby" id="post_sortby" onchange="this.form.submit()">
+                <?php foreach (PostSortBy::cases() as $option) : ?>
+                  <option value="<?= $option->value ?>" <?= $preference['post_sortby'] == $option->value ? 'selected' : '' ?>>
+                    <?= $option->value ?></option>
+                <?php endforeach ?>
+              </select>
               <select class="custom-dropdown-light dropdown-orderby ms-1 me-4" name="orderby" id="orderby" onchange="this.form.submit()">
                 <?php foreach (OrderBy::cases() as $option) : ?>
                   <option value="<?= $option->value ?>" <?= $preference['orderby'] == $option->value ? 'selected' : '' ?>>
-                    <?= $option->value == 'desc' ? 'Latest' : 'Oldest' ?></option>
+                    <?= $option->value ?></option>
                 <?php endforeach ?>
               </select>
               <select class="custom-dropdown-light dropdown-pagesize me-1" name="pagesize" id="pagesize" onchange="this.form.submit()">
