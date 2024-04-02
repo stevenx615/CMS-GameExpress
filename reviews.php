@@ -20,12 +20,22 @@ $query = "SELECT *
           FROM posts p
             JOIN users u ON p.author_id = u.user_id
             JOIN categories c ON p.category_id = c.category_id 
-          WHERE c.category_name = 'News'" . $sortby_query . $orderby_query;
+          WHERE c.category_name = 'Reviews'" . $sortby_query . $orderby_query;
 try {
   $statement = $db_conn->prepare($query);
   $statement->execute();
 } catch (PDOException $e) {
   die('There is an error when retrieving posts.');
+}
+
+// retrieve categories
+$categories_query = "SELECT * FROM categories";
+try {
+  $categories_statement = $db_conn->prepare($categories_query);
+  $categories_statement->execute();
+  $category_rows = $categories_statement->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+  die('There is an error when retrieving categories.');
 }
 ?>
 <!DOCTYPE html>
@@ -50,7 +60,7 @@ try {
     <div class="wrap">
       <div class="row mt-5" style="color:#929AA6;">
         <div class="col">
-          <h1 class="post-category-title">News</h1>
+          <h1 class="post-category-title">Reviews</h1>
         </div>
         <?php if (is_logged_in()) : ?>
           <div class="col text-end fs-6">

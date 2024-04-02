@@ -22,7 +22,7 @@ time, mark, audio, video {
 }
 
 :root {
-  --ge-white-subtle: #DEE0E0;
+  --ge-white-subtle: #dfdfdf;
   --ge-green: #00E46A;
   --ge-green-subtle: #018940;
   --ge-green-dark: #005f2c;
@@ -317,8 +317,8 @@ h1 {
 }
 
 .post-top-bar {
+  padding-bottom: .5rem;
   width: 100%;
-  height: 40%;
   background-color: rgba(0, 0, 0, 0.8);
   position: absolute;
   bottom: 0;
@@ -328,16 +328,19 @@ h1 {
   margin: 0 1rem;
   margin-top: .5rem;
   width: 100%;
-  height: 4rem;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+.post-top-title a {
+  line-height: 1.2;
+}
+
 .post-top-author {
   margin: 0 1rem;
-  margin-top: .3rem;
+  margin-top: .5rem;
   font-size: 1rem;
   font-style: italic;
 }
@@ -389,6 +392,29 @@ h1 {
 
 .post-line {
   margin: .5rem 0;
+}
+
+.category_sidebar {
+  padding: 1rem 1rem;
+  min-height: 30rem;
+  background-color: var(--ge-gray-subtle3);
+  font-size: 1.1rem;
+  border-radius: 7px;
+}
+
+.category_sidebar h2 {
+  margin-bottom: 1rem;
+  color: var(--ge-green);
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.category_sidebar ul {
+  margin-left: 1rem;
+}
+
+.category_sidebar ul li{
+  margin-top: .5rem;
 }
 
 /* ==================  Admin Center ================================================== */

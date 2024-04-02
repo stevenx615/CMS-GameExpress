@@ -4,6 +4,7 @@ require_once 'utilities.php';
 enum PostSortBy: string
 {
   case TITLE = 'Title';
+  case AUTHOR = 'Author';
   case CREATED_DATE = 'Created Date';
   case MODIFIED_DATE = 'Modified Date';
 }
@@ -82,6 +83,7 @@ function get_post_sortby_query($sortby)
 {
   $query = '';
   if ($sortby == PostSortBy::TITLE->value) $query = 'p.post_title';
+  if ($sortby == PostSortBy::AUTHOR->value) $query = 'u.first_name';
   if ($sortby == PostSortBy::CREATED_DATE->value) $query = 'p.post_created_date';
   if ($sortby == PostSortBy::MODIFIED_DATE->value) $query = 'p.post_modified_date';
   return ' ORDER BY ' . $query;
