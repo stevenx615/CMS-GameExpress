@@ -1,6 +1,6 @@
 <?php
 session_start();
-print_r($_SESSION);
+// print_r($_SESSION);
 require 'utilities.php';
 require 'authentication.php';
 require 'db_connection.php';
@@ -53,30 +53,34 @@ try {
           <h1 class="post-category-title">News</h1>
         </div>
         <?php if (is_logged_in()) : ?>
-          <div class="col text-end fs-6">
-            <form name="list-preference-form" method="POST" action="user-preference.php">
-              <label for="orderby">Sort by</label>
-              <select class="custom-dropdown-light dropdown-orderby ms-1" name="post_sortby" id="post_sortby" onchange="this.form.submit()">
-                <?php foreach (PostSortBy::cases() as $option) : ?>
-                  <option value="<?= $option->value ?>" <?= $preference['post_sortby'] == $option->value ? 'selected' : '' ?>>
-                    <?= $option->value ?></option>
-                <?php endforeach ?>
-              </select>
-              <select class="custom-dropdown-light dropdown-orderby ms-1 me-4" name="orderby" id="orderby" onchange="this.form.submit()">
-                <?php foreach (OrderBy::cases() as $option) : ?>
-                  <option value="<?= $option->value ?>" <?= $preference['orderby'] == $option->value ? 'selected' : '' ?>>
-                    <?= $option->value ?></option>
-                <?php endforeach ?>
-              </select>
-              <select class="custom-dropdown-light dropdown-pagesize me-1" name="pagesize" id="pagesize" onchange="this.form.submit()">
-                <?php foreach (PageSize::cases() as $option) : ?>
-                  <option value="<?= $option->value ?>" <?= $preference['pagesize'] == $option->value ? 'selected' : '' ?>>
-                    <?= $option->value ?></option>
-                <?php endforeach ?>
-              </select>
-              <label for="pagesize">per page</label>
-            </form>
-          </div>
+        <div class="col text-end fs-6">
+          <form name="list-preference-form" method="POST" action="user-preference.php">
+            <label for="orderby">Sort by</label>
+            <select class="custom-dropdown-light dropdown-orderby ms-1" name="post_sortby" id="post_sortby"
+              onchange="this.form.submit()">
+              <?php foreach (PostSortBy::cases() as $option) : ?>
+              <option value="<?= $option->value ?>"
+                <?= $preference['post_sortby'] == $option->value ? 'selected' : '' ?>>
+                <?= $option->value ?></option>
+              <?php endforeach ?>
+            </select>
+            <select class="custom-dropdown-light dropdown-orderby ms-1 me-4" name="orderby" id="orderby"
+              onchange="this.form.submit()">
+              <?php foreach (OrderBy::cases() as $option) : ?>
+              <option value="<?= $option->value ?>" <?= $preference['orderby'] == $option->value ? 'selected' : '' ?>>
+                <?= $option->value ?></option>
+              <?php endforeach ?>
+            </select>
+            <select class="custom-dropdown-light dropdown-pagesize me-1" name="pagesize" id="pagesize"
+              onchange="this.form.submit()">
+              <?php foreach (PageSize::cases() as $option) : ?>
+              <option value="<?= $option->value ?>" <?= $preference['pagesize'] == $option->value ? 'selected' : '' ?>>
+                <?= $option->value ?></option>
+              <?php endforeach ?>
+            </select>
+            <label for="pagesize">per page</label>
+          </form>
+        </div>
         <?php endif ?>
         <hr class="post-title-line">
         <div class="row">
@@ -87,19 +91,21 @@ try {
               break;
             }
           ?>
-            <div class="col">
-              <div class="post-top" style=" <?php
+          <div class="col">
+            <div class="post-top" style=" <?php
                                             if (!empty($row['post_thumbnail'])) {
                                               echo "background-image: url(" . $row['post_thumbnail'] . ");";
                                             }
                                             ?>">
-                <div class="post-top-bar">
-                  <h2 class="post-top-title"><a href="view.php?pid=<?= $row['post_id'] ?>"><?= $row['post_title'] ?></a>
-                  </h2>
-                  <div class="post-top-author">By <span class="author-text"><?= $row['first_name'] . ' ' . $row['last_name'] ?></span><span class="ms-5"><?= date('F d, Y', strtotime($row['post_modified_date'])) ?></span></div>
-                </div>
+              <div class="post-top-bar">
+                <h2 class="post-top-title"><a href="view.php?pid=<?= $row['post_id'] ?>"><?= $row['post_title'] ?></a>
+                </h2>
+                <div class="post-top-author">By <span
+                    class="author-text"><?= $row['first_name'] . ' ' . $row['last_name'] ?></span><span
+                    class="ms-5"><?= date('F d, Y', strtotime($row['post_modified_date'])) ?></span></div>
               </div>
             </div>
+          </div>
           <?php endfor ?>
         </div>
         <hr class="post-line">
@@ -108,21 +114,24 @@ try {
             <?php
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) :
             ?>
-              <div class="post-row row">
-                <div class="post-left col-4">
-                  <?php if (!empty($row['post_thumbnail'])) : ?>
-                    <a href="post_view.php?pid=<?= $row['post_id'] ?>"><img src="<?= $row['post_thumbnail'] ?>" class="post-thumbnail"></a>
-                  <?php endif ?>
-                </div>
-                <div class="post-right col">
-                  <div class="post-category">News</div>
-                  <h2 class="post-title"><a href="view.php?pid=<?= $row['post_id'] ?>"><?= $row['post_title'] ?></a>
-                  </h2>
-                  <div class="post-author">By <span class="author-text"><?= $row['first_name'] . ' ' . $row['last_name'] ?></span><span class="ms-5"><?= date('F d, Y', strtotime($row['post_modified_date'])) ?></span></div>
-                  <div></div>
-                </div>
+            <div class="post-row row">
+              <div class="post-left col-4">
+                <?php if (!empty($row['post_thumbnail'])) : ?>
+                <a href="post_view.php?pid=<?= $row['post_id'] ?>"><img src="<?= $row['post_thumbnail'] ?>"
+                    class="post-thumbnail"></a>
+                <?php endif ?>
               </div>
-              <hr class="post-line">
+              <div class="post-right col">
+                <div class="post-category">News</div>
+                <h2 class="post-title"><a href="view.php?pid=<?= $row['post_id'] ?>"><?= $row['post_title'] ?></a>
+                </h2>
+                <div class="post-author">By <span
+                    class="author-text"><?= $row['first_name'] . ' ' . $row['last_name'] ?></span><span
+                    class="ms-5"><?= date('F d, Y', strtotime($row['post_modified_date'])) ?></span></div>
+                <div></div>
+              </div>
+            </div>
+            <hr class="post-line">
             <?php endwhile ?>
           </div>
           <div class="col-2">

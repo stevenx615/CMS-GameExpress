@@ -39,7 +39,7 @@ switch ($action) {
       $post_created_date = date('Y-m-d H:i:s');
       $post_modified_date = date('Y-m-d H:i:s');
       $author_id = $_SESSION['user']['user_id'];
-      $user_id = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
+      $category_id = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
       $game_id = filter_input(INPUT_POST, 'game_id', FILTER_SANITIZE_NUMBER_INT);
 
       if (empty($game_id)) {
@@ -57,7 +57,7 @@ switch ($action) {
         $statement->bindValue(':post_created_date', $post_created_date);
         $statement->bindValue(':post_modified_date', $post_modified_date);
         $statement->bindValue(':author_id', $author_id, PDO::PARAM_INT);
-        $statement->bindValue(':category_id', $user_id, PDO::PARAM_INT);
+        $statement->bindValue(':category_id', $category_id, PDO::PARAM_INT);
         $statement->bindValue(':game_id', $game_id, PDO::PARAM_INT);
         $statement->execute();
         redirect('admin-posts.php');
@@ -143,7 +143,7 @@ switch ($action) {
       break;
     };
   case 'delete': {
-      $error_msgs = delete_post_validation();
+      $error_msgs = delete_comment_validation();
       if (!empty($error_msgs)) {
         $_SESSION['error_msgs'] = $error_msgs;
         redirect('admin-posts-process.php?action=error-messages&pre=delete');
@@ -215,7 +215,7 @@ function edit_post_validation()
   }
   return $error_msgs;
 }
-function delete_post_validation()
+function delete_comment_validation()
 {
   $error_msgs = [];
   if (empty($_GET['id'])) {

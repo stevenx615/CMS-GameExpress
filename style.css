@@ -20,6 +20,8 @@ time, mark, audio, video {
 
 :root {
   --ge-white-subtle: #D5D5D5;
+  --ge-light: #A2A5AD;
+  --ge-light-subtle: #84868C;
   --ge-green: #00E46A;
   --ge-green-subtle: #018940;
   --ge-green-dark: #005f2c;
@@ -521,6 +523,129 @@ footer {
   text-decoration: none;
 }
 
+/*=============================================================================== 
+  Comment
+==================================================================================*/
+.comment {
+  padding: 0 1rem;
+  font-size: 1.1rem;
+}
+
+.comment h3 {
+  font-weight: 600;
+}
+
+.comment label {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: .5rem;
+}
+
+.comment input[type="text"] {
+  background-color: var(--ge-gray-subtle);
+  width: 50%;
+  height: 2.2rem;
+  padding: 0 1rem;
+  padding-left: 1rem;
+  color: var(--ge-white-subtle);
+  border: none;
+  border-radius: 7px;
+  outline: none;
+}
+
+.comment input[type="text"]:focus {
+  outline: 2px solid var(--ge-green-subtle);
+}
+
+.comment textarea {
+  background-color: var(--ge-gray-subtle);
+  width: 100%;
+  height: 4rem;
+  padding: .5rem 1rem;
+  padding-left: 1rem;
+  color: var(--ge-white-subtle);
+  border: none;
+  border-radius: 7px;
+  outline: none;
+}
+
+.comment-list .comment-user-avatar {
+  width: 40px;
+}
+
+.comment-row {
+  display: flex;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--ge-gray-subtle);
+}
+
+.comment-reply {
+  display: inline-block;
+  padding-top: .2rem;
+  padding-left: 1.8rem;
+  width: 5rem;
+  height: 2rem;
+  background-image: url("images/icon-reply.png");
+  background-repeat: no-repeat;
+}
+
+.comment-delete {
+  display: inline-block;
+  padding-top: .2rem;
+  padding-left: 1.8rem;
+  width: 5rem;
+  height: 2rem;
+  background-image: url("images/icon-delete-reply.png");
+  background-repeat: no-repeat;
+}
+
+.comment-row a{
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.comment-row a:link, 
+.comment-row a:visited {
+  color: var(--ge-green-subtle);
+}
+.comment-row a:hover,
+.comment-row a:focus {
+  color: var(--ge-white-subtle);
+}
+
+.comment-row .comment-left-col {
+  width: 4rem;
+}
+
+.comment-row .comment-right-col {
+  width: 100%;
+}
+
+.comment-row .comment-author {
+  font-weight: 600;
+  color: var(--ge-green)
+}
+
+.comment-row .comment-created-date {
+  margin-left: 2rem;
+  color: var(--ge-light-subtle);
+  font-size: 1rem;
+}
+
+.comment-row .comment-display {
+  margin-top: .5rem;
+}
+
+.comment-row .comment-tool {
+  margin-top: .5rem;
+}
+
+.comment_reply_form {
+  padding: 1rem;
+  border: 1px solid var(--ge-gray-subtle);
+  border-radius: 7px;
+}
 /*=============================================================================== 
   Admin Center
 ==================================================================================*/
