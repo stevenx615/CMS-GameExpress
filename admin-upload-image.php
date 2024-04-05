@@ -1,4 +1,5 @@
 <?php
+require_once 'utilities.php';
 $upload_folder = 'uploads';
 
 /**
@@ -6,16 +7,22 @@ $upload_folder = 'uploads';
  * Return first element in the array is the path for original image, 
  * and the second element is the path for thumbnail image.
  */
-function handle_image_upload($files)
+function handle_image_upload($files, $keep_original_name)
 {
   global $upload_folder;
   if (isset($files) && $files['error'] === 0) {
     $temporary_path = $files['tmp_name'];
     $file_name = $files['name']; // with extension
-
-    $new_name = create_image_name();
     $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
-    $new_file_name = $new_name . '.' . $file_extension;
+
+    $new_file_name = $file_name;
+    $new_name = pathinfo($file_name)['filename'];
+    
+    // want a random file name
+    if (!$keep_original_name) {
+      $new_name = create_image_name();
+      $new_file_name = $new_name . '.' . $file_extension;
+    }
 
     $new_path = file_upload_path($new_file_name, $upload_folder);
 
@@ -28,9 +35,15 @@ function handle_image_upload($files)
         $thumbnail_relative_path = $upload_folder . '/' . $new_name . '_thumbnail.' . $file_extension;
         return [$original_relative_path, $thumbnail_relative_path];
       }
+    }else {
+      // not a valid image file
+      $error_msgs = [];
+      $error_msgs[] = 'The upload file should be a valid image .';
+      $_SESSION['error_msgs'] = $error_msgs;
+      redirect('admin-posts-process.php?action=error-messages');
     }
   }
-  return false;
+  return ['', ''];
 }
 
 // generate the file upload path

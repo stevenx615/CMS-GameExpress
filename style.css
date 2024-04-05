@@ -827,3 +827,29 @@ footer {
   border: 1px solid var(--ge-gray-subtle);
   border-radius: 7px;
 }
+
+.admin-form-radio {
+  margin-bottom: 1rem;
+  padding: 1rem .5rem .5rem 1rem;
+  width: 20rem;
+  border: 1px solid var(--ge-gray-subtle);
+  border-radius: 7px;
+  position: relative;
+}
+.admin-form-radio legend {
+  display: inline-block;
+  padding-left: .5rem;
+  padding-right: .5rem;
+  width: fit-content;
+  background-color: var(--ge-gray-dark);
+  font-size: 1rem;
+  position: absolute;
+  top: -12px;
+  left: 5px;
+}
+.admin-form-radio label{
+  display: inline-block; 
+}
+.admin-form-radio input[type="radio"] {
+  margin-left: 1rem; 
+}

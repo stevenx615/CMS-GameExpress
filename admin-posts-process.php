@@ -28,8 +28,9 @@ switch ($action) {
       $cover_image = '';
       $cover_thumbnail_image = '';
       if (isset($_FILES['cover']) && $_FILES['cover']['error'] == 0) {
+        $keep_original_name = $_POST['keep_original_name'] == 'true' ? true : false;
         $files = $_FILES['cover'];
-        $file_paths = handle_image_upload($files);
+        $file_paths = handle_image_upload($files, $keep_original_name);
         $cover_image = $file_paths[0];
         $cover_thumbnail_image = $file_paths[1];
       }
@@ -100,8 +101,9 @@ switch ($action) {
       $cover_image = '';
       $cover_thumbnail_image = '';
       if (isset($_FILES['cover']) && $_FILES['cover']['error'] == 0) {
+        $keep_original_name = $_POST['keep_original_name'] == 'true' ? true : false;
         $files = $_FILES['cover'];
-        $file_paths = handle_image_upload($files);
+        $file_paths = handle_image_upload($files, $keep_original_name);
         $cover_image = $file_paths[0];
         $cover_thumbnail_image = $file_paths[1];
       }

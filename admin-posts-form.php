@@ -170,6 +170,13 @@ function edit_validation(&$post_id)
               <div class="col-5">
                 <label for="cover">Cover Picture</label>
                 <input class="admin-form-file" type="file" name="cover" id="cover" onchange="loadFile(event)" />
+                <fieldset class="admin-form-radio">
+                  <legend>Select a file naming rule:</legend>
+                  <input type="radio" name="keep_original_name" id="keep_original_name_true" value="true" checked>
+                  <label for="keep_original_name_true">Original</label>
+                  <input type="radio" name="keep_original_name" id="keep_original_name_false" value="false">
+                  <label for="keep_original_name_false">Random</label>
+                </fieldset>
                 <?php if (!empty($post_row)) : ?>
                   <label>Author ID</label>
                   <div class="admin-form-field-plain-text"><?= $author_username ?></div>
