@@ -134,11 +134,11 @@ function edit_validation(&$post_id)
   <?php
   include "template-head.php";
   ?>
-  <script src="https://cdn.tiny.cloud/1/sd2wcyddmokf5gis0si7924owx7xfi0vbbgkzubommmbgy53/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="https://cdn.tiny.cloud/1/a0fjq23howl8blp40u0fskayevmc5mjiznzz7dkjladc098o/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
   <script>
     tinymce.init({
       selector: 'textarea#content',
-      height: 800,
+      height: 600,
       plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
       toolbar1: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough',
       toolbar2: 'link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
@@ -166,27 +166,54 @@ function edit_validation(&$post_id)
         </div>
         <div>
           <form action="admin-posts-process.php?action=<?= empty($post_row) ? 'add' : 'edit&id=' . $post_id ?>" method="POST" class="admin-form" id="admin-form" enctype="multipart/form-data" onsubmit="validateForm(event, ['title'])">
-            <div class="row">
-              <div class="col-5">
+            <div class="row mb-4">
+              <div class=" col-5">
                 <label for="cover">Cover Picture</label>
+                <img class="rounded-3 mt-2" src="<?= empty($post_row) ? 'images/placeholder_cover_picture.png' : $post_thumbnail ?>" alt="Cover Picture Preview" id="cover-preview" width="300px">
+                <input type="hidden" name="cover_path" value="<?= !empty($post_row) ? $post_thumbnail : '' ?>">
+              </div>
+              <div class="col">
                 <input class="admin-form-file" type="file" name="cover" id="cover" onchange="loadFile(event)" />
-                <fieldset class="admin-form-radio">
+                <fieldset class="admin-form-radio mt-2">
                   <legend>Select a file naming rule:</legend>
-                  <input type="radio" name="keep_original_name" id="keep_original_name_true" value="true" checked>
-                  <label for="keep_original_name_true">Original</label>
-                  <input type="radio" name="keep_original_name" id="keep_original_name_false" value="false">
-                  <label for="keep_original_name_false">Random</label>
+                  <label for="keep_original_name_true">
+                    <input type="radio" name="keep_original_name" id="keep_original_name_true" value="true" checked>
+                    Original
+                  </label>
+                  <label for="keep_original_name_false">
+                    <input type="radio" name="keep_original_name" id="keep_original_name_false" value="false">
+                    Random
+                  </label>
                 </fieldset>
-                <?php if (!empty($post_row)) : ?>
+                <?php if (!empty($post_row) && !empty($post_row['post_thumbnail'])) : ?>
+                  <fieldset class="admin-form-checkbox">
+                    <input type="checkbox" name="delete_image" id="delete_image" value="true">
+                    <label for="delete_image">
+                      Delete Cover Picture
+                    </label>
+                  </fieldset>
+                <?php endif ?>
+              </div>
+            </div>
+            <hr>
+            <?php if (!empty($post_row)) : ?>
+              <div class="row">
+                <div class="col-5">
                   <label>Author ID</label>
                   <div class="admin-form-field-plain-text"><?= $author_username ?></div>
                   <label>Author</label>
                   <div class="admin-form-field-plain-text"><?= $author_fullname ?></div>
+                </div>
+                <div class="col">
                   <label>Created Date</label>
                   <div class="admin-form-field-plain-text"><?= $post_created_date ?></div>
                   <label>Modified Date</label>
                   <div class="admin-form-field-plain-text"><?= $post_modified_date ?></div>
-                <?php endif ?>
+                </div>
+              </div>
+            <?php endif ?>
+            <div class="row">
+              <div class="col">
                 <label for="category">Category</label>
                 <select class="custom-dropdown-admin" name="category" id="category">
                   <?php foreach ($category_rows as $category_row) : ?>
@@ -196,10 +223,6 @@ function edit_validation(&$post_id)
                       <?= $category_row['category_name'] ?></option>
                   <?php endforeach ?>
                 </select>
-              </div>
-              <div class="col">
-                <label for="cover">Cover Picture Preview</label>
-                <img class="rounded-3" src="<?= empty($post_row) ? 'images/placeholder_cover_picture.png' : $post_thumbnail ?>" alt="Cover Picture Preview" id="cover-preview" width="300px">
               </div>
             </div>
             <label for="game">Game</label>

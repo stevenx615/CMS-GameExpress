@@ -3,7 +3,7 @@ require_once 'utilities.php';
 $upload_folder = 'uploads';
 
 /**
- * main function save the uploaded image
+ * Main function that saves the uploaded image
  * Return first element in the array is the path for original image, 
  * and the second element is the path for thumbnail image.
  */
@@ -17,7 +17,7 @@ function handle_image_upload($files, $keep_original_name)
 
     $new_file_name = $file_name;
     $new_name = pathinfo($file_name)['filename'];
-    
+
     // want a random file name
     if (!$keep_original_name) {
       $new_name = create_image_name();
@@ -35,7 +35,7 @@ function handle_image_upload($files, $keep_original_name)
         $thumbnail_relative_path = $upload_folder . '/' . $new_name . '_thumbnail.' . $file_extension;
         return [$original_relative_path, $thumbnail_relative_path];
       }
-    }else {
+    } else {
       // not a valid image file
       $error_msgs = [];
       $error_msgs[] = 'The upload file should be a valid image .';
@@ -112,4 +112,22 @@ function create_image_name()
   $random_number = rand(1000, 9999);
   $date_time_with_random = $date_time . $random_number;
   return $date_time_with_random;
+}
+
+// delete an image from the file system
+function delete_image($path)
+{
+  global $upload_folder;
+  $success = false;
+
+  $file_name_thumbnail = pathinfo($path, PATHINFO_BASENAME);
+  $file_name_original = str_replace('_thumbnail', '', $file_name_thumbnail);
+  $path_thumbnail = file_upload_path($file_name_thumbnail, $upload_folder);
+  $path_original = file_upload_path($file_name_original, $upload_folder);
+
+  if (file_exists($path_thumbnail) && file_exists($path_original)) {
+    $success = unlink($path_thumbnail) && unlink($path_original);
+  }
+
+  return $success;
 }

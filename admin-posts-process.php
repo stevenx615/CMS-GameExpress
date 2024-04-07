@@ -98,10 +98,20 @@ switch ($action) {
         }
       }
 
+      // delete the image
+      $delete_image = filter_input(INPUT_POST, 'delete_image', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+      $delete_image = $delete_image == 'true' ? true : false;
+      $cover_path = filter_input(INPUT_POST, 'cover_path', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+      if ($delete_image) {
+        delete_image($cover_path);
+      }
+
+      // handle the uploaded image
       $cover_image = '';
       $cover_thumbnail_image = '';
-      if (isset($_FILES['cover']) && $_FILES['cover']['error'] == 0) {
-        $keep_original_name = $_POST['keep_original_name'] == 'true' ? true : false;
+      if (isset($_FILES['cover']) && $_FILES['cover']['error'] == 0 && !$delete_image) {
+        $keep_original_name = filter_input(INPUT_POST, 'keep_original_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $keep_original_name = $keep_original_name == 'true' ? true : false;
         $files = $_FILES['cover'];
         $file_paths = handle_image_upload($files, $keep_original_name);
         $cover_image = $file_paths[0];
@@ -110,7 +120,7 @@ switch ($action) {
 
       // won't update the image and thumbnail if no image is uploaded
       $image_query = '';
-      if ($cover_image != '') {
+      if ($cover_image != '' || $delete_image) {
         $image_query = 'post_image = :post_image, post_thumbnail = :post_thumbnail, ';
       }
 
@@ -127,7 +137,7 @@ switch ($action) {
       $query = "UPDATE posts SET post_title = :post_title, " . $image_query . "post_content = :post_content, post_modified_date = :post_modified_date, category_id = :category_id, game_id = :game_id WHERE post_id = :post_id";
       try {
         $statement = $db_conn->prepare($query);
-        if ($image_query != '') {
+        if ($cover_image != '' || $delete_image) {
           $statement->bindValue(':post_image', $cover_image);
           $statement->bindValue(':post_thumbnail', $cover_thumbnail_image);
         }
