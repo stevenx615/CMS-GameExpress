@@ -216,11 +216,11 @@ function edit_validation(&$post_id)
               <div class="col">
                 <label for="category">Category</label>
                 <select class="custom-dropdown-admin" name="category" id="category">
-                  <?php foreach ($category_rows as $category_row) : ?>
-                    <option value="<?= $category_row['category_id'] ?>" <?php if (!empty($post_row)) {
-                                                                          echo $post_row['category_id'] == $category_row['category_id'] ? 'selected' : '';
-                                                                        } ?>>
-                      <?= $category_row['category_name'] ?></option>
+                  <?php foreach ($category_rows as $search_category_row) : ?>
+                    <option value="<?= $search_category_row['category_id'] ?>" <?php if (!empty($post_row)) {
+                                                                                  echo $post_row['category_id'] == $search_category_row['category_id'] ? 'selected' : '';
+                                                                                } ?>>
+                      <?= $search_category_row['category_name'] ?></option>
                   <?php endforeach ?>
                 </select>
               </div>

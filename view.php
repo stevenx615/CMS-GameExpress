@@ -130,14 +130,13 @@ function displayReply($parent_id, $post_id, $db_conn)
             </ul>
           </nav>
           <h1><?= $result['post_title'] ?></h1>
-          <div class="heading-author">By <span
-              class="author-text"><?= $result['first_name'] . ' ' . $result['last_name'] ?></span>
+          <div class="heading-author">By <span class="author-text"><?= $result['first_name'] . ' ' . $result['last_name'] ?></span>
             <span class="ms-3">published on <?= date('F d, Y', strtotime($result['post_modified_date'])) ?></span>
           </div>
           <?php if (!empty($result['post_image'])) : ?>
-          <div class="heading-image">
-            <img src="<?= $result['post_image'] ?>" alt="Game image">
-          </div>
+            <div class="heading-image">
+              <img src="<?= $result['post_image'] ?>" alt="Game image">
+            </div>
           <?php endif ?>
         </section>
         <section class="post-content">
@@ -159,17 +158,14 @@ function displayReply($parent_id, $post_id, $db_conn)
 
         ?>
         <h3>Comments (<?= $comment_count ?>)</h3>
-        <div class="mt-1 p-3 bg-dark rounded-2">Notes: Words such as "<span class="text-danger">move</span>, <span
-            class="text-danger">away</span>,
+        <div class="mt-1 p-3 bg-dark rounded-2">Notes: Words such as "<span class="text-danger">move</span>, <span class="text-danger">away</span>,
           <span class="text-danger">money</span>" will be filtered out of
           comments.
         </div>
         <h5 class="mt-5">Leave your comment</h5>
-        <form action="comment-process.php?action=add&pid=<?= $result['post_id'] ?>" method="POST" id="comment_form"
-          onsubmit="validateForm(event, ['comment_username', 'comment_content']);">
+        <form action="comment-process.php?action=add&pid=<?= $result['post_id'] ?>" method="POST" id="comment_form" onsubmit="validateForm(event, ['comment_username', 'comment_content']);">
           <div class="mt-2">
-            <input type="text" name="comment_username" id="comment_username" placeholder="Name"
-              value="<?= is_logged_in() ? $_SESSION['user']['first_name'] . ' ' . $_SESSION['user']['last_name'] : '' ?>">
+            <input type="text" name="comment_username" id="comment_username" placeholder="Name" value="<?= is_logged_in() ? $_SESSION['user']['first_name'] . ' ' . $_SESSION['user']['last_name'] : '' ?>">
           </div>
           <div class="field_error mt-1" id="comment_username_error"></div>
           <div class="mt-2">
@@ -198,30 +194,28 @@ function displayReply($parent_id, $post_id, $db_conn)
 
           ?>
           <?php foreach ($comment_rows as $comment_row) : ?>
-          <div class="comment-row" id="c<?= $comment_row['comment_id'] ?>">
-            <div class="comment-left-col">
-              <img class="comment-user-avatar" src="images/user-avatar.png" alt="User Picture">
+            <div class="comment-row" id="c<?= $comment_row['comment_id'] ?>">
+              <div class="comment-left-col">
+                <img class="comment-user-avatar" src="images/user-avatar.png" alt="User Picture">
+              </div>
+              <div class="comment-right-col">
+                <div><span class="comment-author"><?= $comment_row['comment_username'] ?></span>
+                  <span class="comment-created-date"><?= $comment_row['comment_created_date'] ?></span>
+                </div>
+                <div class="comment-display"><?= disemvowel_comment($comment_row['comment_content'], $filter_words) ?>
+                </div>
+                <div class="comment-tool">
+                  <a onclick="createReplyInput(<?= $comment_row['comment_id'] ?>, <?= $post_id ?>, '<?= is_logged_in() ? $_SESSION['user']['first_name'] . ' ' . $_SESSION['user']['last_name'] : '' ?>')" href="javascript:void(0);" class="comment-reply">Reply</a>
+                  <?php if (is_logged_in() && has_role([1])) : ?>
+                    <a href="comment-process.php?action=delete&pid=<?= $post_id ?>&cid=<?= $comment_row['comment_id'] ?>" class="comment-delete">Delete</a>
+                  <?php endif ?>
+                </div>
+                <div class="comment-reply-input" id="comment_reply_input_<?= $comment_row['comment_id'] ?>"></div>
+                <div class=" comment-reply-row">
+                  <?= displayReply($comment_row['comment_id'], $post_id, $db_conn) ?>
+                </div>
+              </div>
             </div>
-            <div class="comment-right-col">
-              <div><span class="comment-author"><?= $comment_row['comment_username'] ?></span>
-                <span class="comment-created-date"><?= $comment_row['comment_created_date'] ?></span>
-              </div>
-              <div class="comment-display"><?= disemvowel_comment($comment_row['comment_content'], $filter_words) ?>
-              </div>
-              <div class="comment-tool">
-                <a onclick="createReplyInput(<?= $comment_row['comment_id'] ?>, <?= $post_id ?>, '<?= is_logged_in() ? $_SESSION['user']['first_name'] . ' ' . $_SESSION['user']['last_name'] : '' ?>')"
-                  href="javascript:void(0);" class="comment-reply">Reply</a>
-                <?php if (is_logged_in() && has_role([1])) : ?>
-                <a href="comment-process.php?action=delete&pid=<?= $post_id ?>&cid=<?= $comment_row['comment_id'] ?>"
-                  class="comment-delete">Delete</a>
-                <?php endif ?>
-              </div>
-              <div class="comment-reply-input" id="comment_reply_input_<?= $comment_row['comment_id'] ?>"></div>
-              <div class=" comment-reply-row">
-                <?= displayReply($comment_row['comment_id'], $post_id, $db_conn) ?>
-              </div>
-            </div>
-          </div>
           <?php endforeach ?>
 
         </div>
@@ -233,59 +227,59 @@ function displayReply($parent_id, $post_id, $db_conn)
   include "template-footer.php";
   ?>
   <script>
-  // create a comment input area
-  function createReplyInput(commentId, postId, fullName) {
-    const form_check = document.querySelector("#comment_form_" + commentId);
-    if (form_check) {
-      form_check.remove();
-      return;
+    // create a comment input area
+    function createReplyInput(commentId, postId, fullName) {
+      const form_check = document.querySelector("#comment_form_" + commentId);
+      if (form_check) {
+        form_check.remove();
+        return;
+      }
+
+      var form = document.createElement("form");
+      form.setAttribute("action", `comment-process.php?action=add&pid=${postId}&cid=${commentId}`);
+      form.setAttribute("method", "POST");
+      form.setAttribute("id", "comment_form_" + commentId);
+      form.setAttribute("class", "comment_reply_form");
+      form.onsubmit = function(event) {
+        validateForm(event, ['comment_username_' + commentId, 'comment_content_' + commentId]);
+      };
+
+      var inputUsername = document.createElement("input");
+      inputUsername.setAttribute("type", "text");
+      inputUsername.setAttribute("name", "comment_username");
+      inputUsername.setAttribute("id", "comment_username_" + commentId);
+      inputUsername.setAttribute("placeholder", "Name");
+      inputUsername.value = fullName;
+
+      var divUsernameError = document.createElement("div");
+      divUsernameError.setAttribute("class", "field_error mt-1");
+      divUsernameError.setAttribute("id", `comment_username_${commentId}_error`);
+
+      var textareaContent = document.createElement("textarea");
+      textareaContent.setAttribute("class", "mt-2");
+      textareaContent.setAttribute("name", "comment_content");
+      textareaContent.setAttribute("id", "comment_content_" + commentId);
+      textareaContent.setAttribute("placeholder", "Write your comment here...");
+
+      var divContentError = document.createElement("div");
+      divContentError.setAttribute("class", "field_error mt-1");
+      divContentError.setAttribute("id", `comment_content_${commentId}_error`);
+
+      // Create submit button
+      var submitButton = document.createElement("button");
+      submitButton.setAttribute("type", "submit");
+      submitButton.setAttribute("class", "btn-green btn-submit mt-0");
+      submitButton.textContent = "Post Comment";
+
+      // Append elements to the form
+      form.appendChild(inputUsername);
+      form.appendChild(divUsernameError);
+      form.appendChild(textareaContent);
+      form.appendChild(divContentError);
+      form.appendChild(submitButton);
+
+      document.getElementById("comment_reply_input_" + commentId).appendChild(form)
     }
-
-    var form = document.createElement("form");
-    form.setAttribute("action", `comment-process.php?action=add&pid=${postId}&cid=${commentId}`);
-    form.setAttribute("method", "POST");
-    form.setAttribute("id", "comment_form_" + commentId);
-    form.setAttribute("class", "comment_reply_form");
-    form.onsubmit = function(event) {
-      validateForm(event, ['comment_username_' + commentId, 'comment_content_' + commentId]);
-    };
-
-    var inputUsername = document.createElement("input");
-    inputUsername.setAttribute("type", "text");
-    inputUsername.setAttribute("name", "comment_username");
-    inputUsername.setAttribute("id", "comment_username_" + commentId);
-    inputUsername.setAttribute("placeholder", "Name");
-    inputUsername.value = fullName;
-
-    var divUsernameError = document.createElement("div");
-    divUsernameError.setAttribute("class", "field_error mt-1");
-    divUsernameError.setAttribute("id", `comment_username_${commentId}_error`);
-
-    var textareaContent = document.createElement("textarea");
-    textareaContent.setAttribute("class", "mt-2");
-    textareaContent.setAttribute("name", "comment_content");
-    textareaContent.setAttribute("id", "comment_content_" + commentId);
-    textareaContent.setAttribute("placeholder", "Write your comment here...");
-
-    var divContentError = document.createElement("div");
-    divContentError.setAttribute("class", "field_error mt-1");
-    divContentError.setAttribute("id", `comment_content_${commentId}_error`);
-
-    // Create submit button
-    var submitButton = document.createElement("button");
-    submitButton.setAttribute("type", "submit");
-    submitButton.setAttribute("class", "btn-green btn-submit mt-0");
-    submitButton.textContent = "Post Comment";
-
-    // Append elements to the form
-    form.appendChild(inputUsername);
-    form.appendChild(divUsernameError);
-    form.appendChild(textareaContent);
-    form.appendChild(divContentError);
-    form.appendChild(submitButton);
-
-    document.getElementById("comment_reply_input_" + commentId).appendChild(form)
-  }
   </script>
 </body>
 

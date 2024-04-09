@@ -28,12 +28,12 @@ $query = "SELECT *
             JOIN users u ON p.author_id = u.user_id" . $author_query . $post_sortby_query . $orderby_query;
 
 try {
-  $statement = $db_conn->prepare($query);
+  $posts_stmt = $db_conn->prepare($query);
   if (!empty($author_query)) {
-    $statement->bindValue(':user_id', $_SESSION['user']['user_id']);
+    $posts_stmt->bindValue(':user_id', $_SESSION['user']['user_id']);
   }
-  $statement->execute();
-  $rows = $statement->fetchAll();
+  $posts_stmt->execute();
+  $rows = $posts_stmt->fetchAll();
 } catch (PDOException $e) {
   die('There is an error when retrieving posts.');
 }

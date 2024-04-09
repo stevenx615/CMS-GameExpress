@@ -39,9 +39,23 @@ function change_preference()
         'post_sortby' => $_POST['post_sortby'],
       );
       setcookie('preference', json_encode($preference), time() + 3600 * 24, "/");
-      redirect(parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH));
+
+      // construct a new url with parameters
+      $new_url = get_new_url();
+      redirect($new_url);
     }
   }
+}
+
+function get_new_url()
+{
+  $current_params = $_SERVER['QUERY_STRING'];
+  $referer_path = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH);
+  $new_url = $referer_path;
+  if (!empty($current_params)) {
+    $new_url .= '?' . $current_params;
+  }
+  return $new_url;
 }
 
 
