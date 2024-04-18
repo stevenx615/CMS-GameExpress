@@ -646,6 +646,48 @@ footer {
   border: 1px solid var(--ge-gray-subtle);
   border-radius: 7px;
 }
+
+
+/*=============================================================================== 
+  About me
+==================================================================================*/
+.profile .my-avatar {
+  position: relative;
+}
+
+.profile .my-avatar::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(rgba(255, 255, 255, 0) 70%, var(--ge-gray-dark));
+
+}
+
+.profile .t1 {
+  font-size: 3rem;
+  font-weight: bold;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: #00ffc2;
+  background: linear-gradient(45deg, #ffffff 0%, var(--ge-green) 50%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; 
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent
+}
+
+.profile p {
+  font-size: 1.2rem;
+}
+
+.profile .contacts a:hover img {
+  filter: drop-shadow(0 0 .5rem var(--ge-green));
+}
+
+
 /*=============================================================================== 
   Admin Center
 ==================================================================================*/
