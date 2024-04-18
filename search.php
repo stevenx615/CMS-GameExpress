@@ -48,7 +48,7 @@ try {
   die('There is an error when retrieving posts.');
 }
 
-
+// validate the essential parameters
 function validation()
 {
   $error_msgs = [];
@@ -72,6 +72,9 @@ function validation()
   return $error_msgs;
 }
 
+// validate the search content from search bar
+// modify the original $search_content
+// modify the original $url_params
 function handle_search_content(&$search_content, &$url_params)
 {
   if (!empty($_POST['search_content'])) {
@@ -79,17 +82,24 @@ function handle_search_content(&$search_content, &$url_params)
   } elseif (!empty($_GET['search'])) {
     $search_content = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
   }
+  $search_content = trim($search_content);
   $url_params .= "search=" . $search_content . "&";
 }
 
+// validate the properties of post from search bar
+// modify the original $field_where_query
+// modify the original $url_params
 function handle_field_selected(&$field_where_query, $search_content, &$url_params)
 {
   $field = 'title';
+
   if (!empty($_POST['field_selected'])) {
     $field = filter_input(INPUT_POST, 'field_selected', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
   } elseif (!empty($_GET['field'])) {
     $field = filter_input(INPUT_GET, 'field', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
   }
+
+  $search_content = strtolower($search_content);
   switch ($field) {
     case 'title': {
         $field_where_query = " p.post_title LIKE '%" . $search_content . "%'";
@@ -112,6 +122,9 @@ function handle_field_selected(&$field_where_query, $search_content, &$url_param
   return $field;
 }
 
+// validate the category ID from search bar
+// modify the original $categories_where_query
+// modify the original $url_params 
 function handle_category_selected(&$categories_where_query, &$url_params)
 {
   $cid = -1;
@@ -203,7 +216,7 @@ function handle_category_selected(&$categories_where_query, &$url_params)
               <div class="post-row row">
                 <div class="post-left col-4">
                   <?php if (!empty($row['post_thumbnail'])) : ?>
-                    <a href="post_view.php?pid=<?= $row['post_id'] ?>"><img src="<?= $row['post_thumbnail'] ?>" class="post-thumbnail"></a>
+                    <a href="view.php?pid=<?= $row['post_id'] ?>"><img src="<?= $row['post_thumbnail'] ?>" class="post-thumbnail"></a>
                   <?php endif ?>
                 </div>
                 <div class="post-right col">

@@ -111,7 +111,7 @@ try {
               <div class="post-row row">
                 <div class="post-left col-4">
                   <?php if (!empty($row['post_thumbnail'])) : ?>
-                    <a href="post_view.php?pid=<?= $row['post_id'] ?>"><img src="<?= $row['post_thumbnail'] ?>" class="post-thumbnail"></a>
+                    <a href="view.php?pid=<?= $row['post_id'] ?>"><img src="<?= $row['post_thumbnail'] ?>" class="post-thumbnail"></a>
                   <?php endif ?>
                 </div>
                 <div class="post-right col">

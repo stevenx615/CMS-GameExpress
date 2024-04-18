@@ -1,6 +1,6 @@
 <?php
 session_start();
-print_r($_SESSION);
+// print_r($_SESSION);
 require 'utilities.php';
 require 'admin-authentication.php';
 require 'admin-user-preference.php';
