@@ -25,7 +25,7 @@ require 'db_connection.php';
 
   <main class="main d-flex justify-content-center flex-grow-1">
     <div class="wrap">
-      <div class="row mt-5" style="color:#929AA6;">
+      <div class="row mt-5">
         <div>
           <h1 class="post-category-title">About me</h1>
         </div>
