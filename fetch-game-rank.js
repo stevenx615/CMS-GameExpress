@@ -13,6 +13,7 @@ function fetchGameRank() {
     });
 }
 
+// function to process the game data and add it to the table
 function processResults(games) {
   const gamesArray = Object.values(games);
   gamesArray.sort((a, b) => b.average_forever - a.average_forever);

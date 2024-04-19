@@ -141,7 +141,7 @@ switch ($action) {
           $statement->bindValue(':post_image', $cover_image);
           $statement->bindValue(':post_thumbnail', $cover_thumbnail_image);
         }
-        $statement->bindValue(':post_id', $post_id);
+        $statement->bindValue(':post_id', $post_id, PDO::PARAM_INT);
         $statement->bindValue(':post_title', $title);
         $statement->bindValue(':post_content', $content);
         $statement->bindValue(':post_modified_date', $post_modified_date);

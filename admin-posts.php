@@ -117,9 +117,9 @@ $posts_count = count($rows);
                     <td><?= $row['category_name'] ?></td>
                     <td><?= date('F d, Y', strtotime($row['post_modified_date'])) ?></td>
                     <td>
-                      <a class="operate-icon tooltip-view" href="view.php?pid=<?= $row['post_id'] ?>"><img src=" images/icon-view.png" alt="View" /></a>
-                      <a class="operate-icon tooltip-edit" href="admin-posts-form.php?action=edit&id=<?= $row['post_id'] ?>"><img src=" images/icon-edit.png" alt="Edit" /></a>
-                      <a class="operate-icon tooltip-delete" href="admin-posts-process.php?action=delete&id=<?= $row['post_id'] ?>" onclick="return confirm('Are you sure you want to delete this post?')"><img src=" images/icon-delete.png" alt="Delete" /></a>
+                      <a class="operate-icon tooltip-view" href="view.php?pid=<?= $row['post_id'] ?>"><img src="images/icon-view.png" alt="View"></a>
+                      <a class="operate-icon tooltip-edit" href="admin-posts-form.php?action=edit&id=<?= $row['post_id'] ?>"><img src="images/icon-edit.png" alt="Edit"></a>
+                      <a class="operate-icon tooltip-delete" href="admin-posts-process.php?action=delete&id=<?= $row['post_id'] ?>" onclick="return confirm('Are you sure you want to delete this post?')"><img src=" images/icon-delete.png" alt="Delete"></a>
                     </td>
                   </tr>
                 <?php endforeach ?>

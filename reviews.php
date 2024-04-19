@@ -98,7 +98,11 @@ try {
             }
           ?>
             <div class="col">
-              <div class="post-top" style="background-image: url(<?= $row['post_thumbnail'] ?>);">
+              <div class="post-top" style="<?php
+                                            if (!empty($row['post_thumbnail'])) {
+                                              echo "background-image: url(" . $row['post_thumbnail'] . ");";
+                                            }
+                                            ?>">
                 <div class="post-top-bar">
                   <h2 class="post-top-title"><a href="view.php?pid=<?= $row['post_id'] ?>"><?= $row['post_title'] ?></a>
                   </h2>
@@ -116,7 +120,7 @@ try {
             ?>
               <div class="post-row row">
                 <div class="post-left col-4">
-                  <a href="post_view.php?pid=<?= $row['post_id'] ?>"><img src="<?= $row['post_thumbnail'] ?>" class="post-thumbnail"></a>
+                  <a href="post_view.php?pid=<?= $row['post_id'] ?>"><img src="<?= $row['post_thumbnail'] ?>" class="post-thumbnail" alt="Post thumbnail"></a>
                 </div>
                 <div class="post-right col">
                   <div class="post-category">News</div>
